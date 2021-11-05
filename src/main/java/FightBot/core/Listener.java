@@ -23,12 +23,12 @@ public class Listener extends ListenerAdapter {
 
     @Override
     public void onReady(@NotNull ReadyEvent event) {
+        Utils.getInstance().checkRolesOnCall();
         log.info("Hello!! Now you are up to work!");
         saverThread.setDaemon(true);
         saverThread.start();
         deleterThread.setDaemon(true);
         deleterThread.start();
-        Utils.getInstance().checkRolesOnCall();
     }
 
     @Override
