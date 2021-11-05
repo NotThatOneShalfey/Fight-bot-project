@@ -36,10 +36,10 @@ public class HelpCommand implements ICommand {
 
         if (args.isEmpty()) {
             List<String> commandNames = available.stream()
-                    .map((command) -> "-" + command.getInvoke())
+                    .map((command) -> "=" + command.getInvoke())
                     .collect(Collectors.toList());
             List<String> commandLocalNames = available.stream()
-                    .map((command) -> "-" + command.getLocalInvoke())
+                    .map((command) -> "=" + command.getLocalInvoke())
                     .collect(Collectors.toList());
 
             textChannel.sendMessageEmbeds(buildEmbed(commandNames, commandLocalNames)).queue(
@@ -91,7 +91,7 @@ public class HelpCommand implements ICommand {
     private MessageEmbed buildEmbed(List<String> commandNames, List<String> commandLocalNames) {
         EmbedBuilder eBuilder = new EmbedBuilder();
         eBuilder.setTitle("Список доступных команд")
-                .setDescription("Помощь по отдельной команде можно вызвать по образцу:\n-help <название команды без '-'>\n-помощь <название команды без '-'>")
+                .setDescription("Помощь по отдельной команде можно вызвать по образцу:\n=help <название команды без '='>\n=помощь <название команды без '='>")
                 .addField("", String.join("\n", commandNames), true)
                 .addField("", String.join("\n", commandLocalNames), true);
         eBuilder.build();
@@ -100,7 +100,7 @@ public class HelpCommand implements ICommand {
 
     private MessageEmbed buildHelpEmbed(ICommand command) {
         EmbedBuilder eBuilder = new EmbedBuilder();
-        eBuilder.setTitle("Команда -" + command.getInvoke() + "/-" + command.getLocalInvoke())
+        eBuilder.setTitle("Команда =" + command.getInvoke() + "/=" + command.getLocalInvoke())
                 .setDescription(command.getHelp());
         return eBuilder.build();
     }

@@ -21,7 +21,7 @@ public class Configuration {
     private static Configuration instance;
 
     private boolean inDebugMode = false;
-    private final String prefix = "-";
+    private final String prefix = "=";
     private Long ownerId = 329388314333282304L;
     private long guildId;
     private long publicChannelId;

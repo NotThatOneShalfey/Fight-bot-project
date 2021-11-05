@@ -40,13 +40,13 @@ public class Listener extends ListenerAdapter {
             manager.handleCommand(event);
         }
 
-        if (event.getMessage().getContentRaw().equals("-shutdown") && event.getAuthor().getIdLong() == Configuration.getInstance().getOwnerId()) {
+        if (event.getMessage().getContentRaw().equals("=shutdown") && event.getAuthor().getIdLong() == Configuration.getInstance().getOwnerId()) {
             event.getMessage().delete().complete();
             Utils.getInstance().getManager().shutdown();
             System.exit(0);
         }
 
-        if (event.getMessage().getContentRaw().equals("-check") && event.getAuthor().getIdLong() == Configuration.getInstance().getOwnerId()) {
+        if (event.getMessage().getContentRaw().equals("=check") && event.getAuthor().getIdLong() == Configuration.getInstance().getOwnerId()) {
             event.getMessage().delete().complete();
             Utils.getInstance().checkRolesOnCall();
         }
