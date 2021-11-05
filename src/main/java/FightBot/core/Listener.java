@@ -28,6 +28,7 @@ public class Listener extends ListenerAdapter {
         saverThread.start();
         deleterThread.setDaemon(true);
         deleterThread.start();
+        Utils.getInstance().checkRolesOnCall();
     }
 
     @Override

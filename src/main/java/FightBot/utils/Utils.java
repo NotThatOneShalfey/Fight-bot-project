@@ -77,23 +77,16 @@ public class Utils {
         log.info("Start roles check up");
         Guild guild =  manager.getGuildById(FightBot.configuration.Configuration.getInstance().getGuildId());
         for (Map.Entry<Long, Long> entry : FightBot.configuration.Configuration.getInstance().rankingsMap.entrySet()) {
-            try {
-                log.info("Role {} exists, rank level = {}", guild.getRoleById(entry.getValue()).getName(), entry.getKey());
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (guild.getRoleById(entry.getValue()) == null) {
+                log.info("Role with ID = {}, rank level = {} does not exist", entry.getValue(), entry.getKey());
             }
         }
-
         for (Long id : FightBot.configuration.Configuration.getInstance().titlesList) {
-            if (guild.getRoleById(id) != null) {
-                log.info("Title {} exists", guild.getRoleById(id).getName());
-            }
-            else {
-                log.info("Title does not exist");
+            if (guild.getRoleById(id) == null) {
+                log.info("Title with ID = {} does not exist", id);
             }
 
         }
-
         log.info("Roles check up has ended");
     }
 
