@@ -2,7 +2,6 @@ package FightBot.utils;
 
 import FightBot.entities.FightMessage;
 import FightBot.entities.Fighter;
-import FightBot.interfaces.ICommand;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -10,9 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.springframework.context.annotation.Configuration;
 
@@ -74,6 +71,30 @@ public class Utils {
         writer.write(str);
         writer.flush();
         writer.close();
+    }
+
+    public void checkRolesOnCall() {
+        log.info("Start roles check up");
+        Guild guild =  manager.getGuildById(FightBot.configuration.Configuration.getInstance().getGuildId());
+        for (Map.Entry<Long, Long> entry : FightBot.configuration.Configuration.getInstance().rankingsMap.entrySet()) {
+            try {
+                log.info("Role {} exists, rank level = {}", guild.getRoleById(entry.getValue()).getName(), entry.getKey());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        for (Long id : FightBot.configuration.Configuration.getInstance().titlesList) {
+            if (guild.getRoleById(id) != null) {
+                log.info("Title {} exists", guild.getRoleById(id).getName());
+            }
+            else {
+                log.info("Title does not exist");
+            }
+
+        }
+
+        log.info("Roles check up has ended");
     }
 
     @PostConstruct

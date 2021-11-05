@@ -45,6 +45,11 @@ public class Listener extends ListenerAdapter {
             Utils.getInstance().getManager().shutdown();
             System.exit(0);
         }
+
+        if (event.getMessage().getContentRaw().equals("-check") && event.getAuthor().getIdLong() == Configuration.getInstance().getOwnerId()) {
+            event.getMessage().delete().complete();
+            Utils.getInstance().checkRolesOnCall();
+        }
     }
 
     @Override

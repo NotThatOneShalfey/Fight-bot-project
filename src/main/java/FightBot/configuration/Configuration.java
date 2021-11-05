@@ -42,17 +42,6 @@ public class Configuration {
 
     @PostConstruct
     public void init() {
-
-        rankingsMap.put(1L, 904906006381887499L);
-        rankingsMap.put(2L, 904906152591102053L);
-        rankingsMap.put(3L, 904906200120950814L);
-        rankingsMap.put(4L, 904906248128987156L);
-        rankingsMap.put(5L, 904906280576090123L);
-        rankingsMap.put(6L, 904906326856040448L);
-
-        titlesList.add(905946883954970634L);
-        titlesList.add(905946961331507221L);
-
         instance = this;
     }
 }
