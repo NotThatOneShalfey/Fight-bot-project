@@ -23,6 +23,7 @@ public class CommandManager {
     private Map<String, ICommand> localInvokeCommands = new HashMap<>();
 
 
+	// Some comment
     public void addSelectionMenu(ISelectionMenuCommand menu) {
         if (!this.selectionCommands.containsKey(menu.getInvoke())) {
             this.selectionCommands.put(menu.getInvoke(), menu);
