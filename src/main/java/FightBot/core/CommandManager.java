@@ -29,7 +29,7 @@ public class CommandManager {
             this.selectionCommands.put(menu.getInvoke(), menu);
         }
     }
-
+    // Another comment
     public ICommand getCommand(String name) {
         return this.commands.get(name);
     }
