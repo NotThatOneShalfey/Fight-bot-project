@@ -62,8 +62,7 @@ public class CommandManager {
     }
 
     public void handleCommand(GuildMessageReceivedEvent event) {
-        if (event.getGuild().getIdLong() != Configuration.getInstance().getGuildId()
-                && event.getChannel().getIdLong() != Configuration.getInstance().getPublicChannelId()) {
+        if (event.getChannel().getIdLong() != Configuration.getInstance().getPublicChannelId()) {
             return;
         }
         final String[] split = event.getMessage().getContentRaw().replaceFirst("(?i)" + Pattern.quote(Configuration.getInstance().getPrefix()), "").split("\\s+");
