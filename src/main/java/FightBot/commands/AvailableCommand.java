@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,12 +47,25 @@ public class AvailableCommand implements ICommand {
 
         for (Map.Entry<Long, Fighter> entry : fighters.entrySet()) {
             if (entry.getKey() != fighter.getId()) {
-                if (entry.getValue().getRank() - fighter.getRank() >= 0L
-                        && entry.getValue().getRank() - fighter.getRank() <= Configuration.getInstance().getRankDifference()
-                        && !Utils.getInstance().lockedFightersList.contains(entry.getValue().getId())) {
-                    if (event.getGuild().getMemberById(entry.getValue().getId()).getOnlineStatus().equals(OnlineStatus.ONLINE)) {
-                        availableFightersNames.add(entry.getValue().getDiscordName());
-                        availableFightersRanks.add(entry.getValue().getRankName());
+                Fighter fighterTo = entry.getValue();
+                // Проверка на ранги
+                if (fighterTo.getRank() - fighter.getRank() >= 0L
+                        && fighterTo.getRank() - fighter.getRank() <= Configuration.getInstance().getRankDifference()
+                        && !Utils.getInstance().lockedFightersList.contains(fighterTo.getId())) {
+                    // Проверка на то, что с игроком еще не дрались
+                    if (!Configuration.getInstance().isInDebugMode() && !Utils.getInstance().fightDatesList.isEmpty()) {
+                        for (Map.Entry<LocalDate, Map.Entry<Long, Long>> datesEntry : Utils.getInstance().fightDatesList) {
+                            if (datesEntry.getKey().equals(LocalDate.now())) {
+                                if (!(datesEntry.getValue().getKey().equals(fighter.getId()) && datesEntry.getValue().getValue().equals(entry.getValue().getId()))
+                                        && !(datesEntry.getValue().getKey().equals(entry.getValue().getId()) && datesEntry.getValue().getValue().equals(fighter.getId()))) {
+                                    // Проверка на чела в онлайне
+                                    if (event.getGuild().getMemberById(entry.getValue().getId()).getOnlineStatus().equals(OnlineStatus.ONLINE)) {
+                                        availableFightersNames.add(entry.getValue().getDiscordName());
+                                        availableFightersRanks.add(entry.getValue().getRankName());
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

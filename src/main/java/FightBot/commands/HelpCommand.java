@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class HelpCommand implements ICommand {
     private CommandManager manager;
-    //TODO сделать нормальный хелп для всего
+
     @Override
     public void handle(List<String> args, GuildMessageReceivedEvent event) {
         TextChannel textChannel = event.getChannel();

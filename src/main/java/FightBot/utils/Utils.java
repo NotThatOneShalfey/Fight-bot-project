@@ -75,7 +75,7 @@ public class Utils {
 
     public void checkRolesOnCall() {
         log.info("Start roles check up");
-        Guild guild =  manager.getGuildById(FightBot.configuration.Configuration.getInstance().getGuildId());
+        Guild guild = manager.getGuildById(FightBot.configuration.Configuration.getInstance().getGuildId());
         for (Map.Entry<Long, Long> entry : FightBot.configuration.Configuration.getInstance().rankingsMap.entrySet()) {
             if (guild.getRoleById(entry.getValue()) == null) {
                 log.info("Role with ID = {}, rank level = {} does not exist", entry.getValue(), entry.getKey());
