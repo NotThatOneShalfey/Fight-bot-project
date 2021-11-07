@@ -5,6 +5,7 @@ import FightBot.entities.Fighter;
 import FightBot.interfaces.ICommand;
 import FightBot.utils.Constants;
 import FightBot.utils.Utils;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class AvailableCommand implements ICommand {
     @Override
     public void handle(List<String> args, GuildMessageReceivedEvent event) {
@@ -53,18 +55,11 @@ public class AvailableCommand implements ICommand {
                         && fighterTo.getRank() - fighter.getRank() <= Configuration.getInstance().getRankDifference()
                         && !Utils.getInstance().lockedFightersList.contains(fighterTo.getId())) {
                     // Проверка на то, что с игроком еще не дрались
-                    if (!Configuration.getInstance().isInDebugMode() && !Utils.getInstance().fightDatesList.isEmpty()) {
-                        for (Map.Entry<LocalDate, Map.Entry<Long, Long>> datesEntry : Utils.getInstance().fightDatesList) {
-                            if (datesEntry.getKey().equals(LocalDate.now())) {
-                                if (!(datesEntry.getValue().getKey().equals(fighter.getId()) && datesEntry.getValue().getValue().equals(entry.getValue().getId()))
-                                        && !(datesEntry.getValue().getKey().equals(entry.getValue().getId()) && datesEntry.getValue().getValue().equals(fighter.getId()))) {
-                                    // Проверка на чела в онлайне
-                                    if (event.getGuild().getMemberById(entry.getValue().getId()).getOnlineStatus().equals(OnlineStatus.ONLINE)) {
-                                        availableFightersNames.add(entry.getValue().getDiscordName());
-                                        availableFightersRanks.add(entry.getValue().getRankName());
-                                    }
-                                }
-                            }
+                    if (!Utils.getInstance().fightDatesList.contains(Map.entry(LocalDate.now(), Map.entry(fighter.getId(), fighterTo.getId())))
+                            && !Utils.getInstance().fightDatesList.contains(Map.entry(LocalDate.now(), Map.entry(fighterTo.getId(), fighter.getId())))) {
+                        if (!event.getGuild().getMemberById(entry.getValue().getId()).getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
+                            availableFightersNames.add(entry.getValue().getDiscordName());
+                            availableFightersRanks.add(entry.getValue().getRankName());
                         }
                     }
                 }
