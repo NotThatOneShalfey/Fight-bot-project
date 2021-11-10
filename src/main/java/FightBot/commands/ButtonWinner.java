@@ -28,33 +28,47 @@ public class ButtonWinner implements IButtonCommand {
         if (!bot.hasPermission(Permission.MANAGE_ROLES)) {
             return;
         }
-
+        // Проверка, если на кнопку нажимает рефери
         if (!Configuration.getInstance().getReferees().contains(event.getMember().getIdLong())) {
+            // Проверка, если кнопку нажали игроки
             if (event.getMember().getIdLong() != firstFighter.getId() && event.getMember().getIdLong() != secondFighter.getId()) {
                 return;
             }
 
+            // Записываем результат от первого бойца
             if (event.getMember().getIdLong() == firstFighter.getId()) {
                 fightMessage.setFirstFighterWinnerDecision(event.getComponent().getLabel());
-            } else {
+            }
+            // Записываем результат от второго бойца
+            else {
                 fightMessage.setSecondFighterWinnerDecision(event.getComponent().getLabel());
             }
 
+            // Редактируем с учетом того, кто нажал кнопку
             event.getMessage()
                     .editMessageEmbeds(fightMessage.buildEmbed())
                     .queue();
 
+            // Сохраняем сообщение
             Utils.getInstance().fightMessages.put(event.getMessage().getIdLong(), fightMessage);
 
+            // Если результат игроков не сошёлся, ждем дальше
             if (!fightMessage.getFirstFighterWinnerDecision().equals(fightMessage.getSecondFighterWinnerDecision())) {
                 return;
             }
         }
-
+        // Если результат сошёлся или выбрал рефери
         Map<Long, Long> rankingsMap = Configuration.getInstance().rankingsMap;
 
         Long firstMemberNextRank = firstFighter.getRank();
         Long secondMemberNextRank = secondFighter.getRank();
+
+        Boolean highBid = false;
+
+        if (Math.max(firstMemberNextRank, secondMemberNextRank) - Math.min(firstMemberNextRank, secondMemberNextRank) > 3) {
+            highBid = true;
+        }
+        log.debug("High bid : {}", highBid);
 
         Long firstMemberCurrentRankId = rankingsMap.get(firstMemberNextRank);
         Long secondMemberCurrentRankId = rankingsMap.get(secondMemberNextRank);
@@ -70,21 +84,37 @@ public class ButtonWinner implements IButtonCommand {
         Long secondFighterLoses = secondFighter.getLoses();
 
         // Вычисляем кто выиграл по нажатой кнопке
+        // Если победил первый
         if (event.getComponent().getLabel().contains(firstFighter.getDiscordName())) {
+            // Если ранг первого максимальный, то оставляем без изменений
             if (rankingsMap.get(firstMemberNextRank + 1) == null) {
                 firstMemberNextRankId = firstMemberCurrentRankId;
             }
+            // Если высокие ставки и ранг первого меньше ранга второго, то добавляем +2
+            else if (highBid && firstMemberNextRank < secondMemberNextRank && rankingsMap.get(firstMemberNextRank + 2) != null) {
+                firstMemberNextRank = firstMemberNextRank + 2;
+                firstMemberNextRankId = rankingsMap.get(firstMemberNextRank);
+            }
+            // В другом случае добавляем +1
             else {
                 firstMemberNextRank = firstMemberNextRank + 1;
                 firstMemberNextRankId = rankingsMap.get(firstMemberNextRank);
             }
+            // Если ранг второго минимальный, то оставляем без изменений
             if (rankingsMap.get(secondMemberNextRank - 1) == null) {
                 secondMemberNextRankId = secondMemberCurrentRankId;
             }
+            // Если высокие ставки и ранг первого меньше ранга второго, то понижаем на -2
+            else if (highBid && firstMemberNextRank < secondMemberNextRank && rankingsMap.get(secondMemberNextRank - 2) != null) {
+                secondMemberNextRank = secondMemberNextRank - 2;
+                secondMemberNextRankId = rankingsMap.get(secondMemberNextRank);
+            }
+            // В другом случае понижаем -1
             else {
                 secondMemberNextRank = secondMemberNextRank - 1;
                 secondMemberNextRankId = rankingsMap.get(secondMemberNextRank);
             }
+            // Устанавливаем победы/поражения
             firstFighter.setWins(firstFighterWins + 1);
             firstFighter.setWinStreak(firstFighterWinStreak + 1);
             secondFighter.setLoses(secondFighterLoses + 1);
@@ -92,21 +122,37 @@ public class ButtonWinner implements IButtonCommand {
                 secondFighter.setWinStreak(0L);
             }
         }
+        // Если победил второй
         else {
+            // Если ранг первого минимальный, то оставляем без изменений
             if (rankingsMap.get(firstMemberNextRank - 1) == null) {
                 firstMemberNextRankId = firstMemberCurrentRankId;
             }
+            // Если высокие ставки и ранг второго меньше ранга первого, то понижаем на -2
+            else if (highBid && secondMemberNextRank < firstMemberNextRank && rankingsMap.get(firstMemberNextRank - 2) != null) {
+                firstMemberNextRank = firstMemberNextRank - 2;
+                firstMemberNextRankId = rankingsMap.get(firstMemberNextRank);
+            }
+            // В другом случае понижаем -1
             else {
                 firstMemberNextRank = firstMemberNextRank - 1;
                 firstMemberNextRankId = rankingsMap.get(firstMemberNextRank);
             }
+            // Если ранг второго максимальный, то оставляем без изменений
             if (rankingsMap.get(secondMemberNextRank + 1) == null) {
                 secondMemberNextRankId = secondMemberCurrentRankId;
             }
+            // Если высокие ставки и ранг второго меньше ранга первого, то повышаем на +2
+            else if (highBid && secondMemberNextRank < firstMemberNextRank && rankingsMap.get(secondMemberNextRank + 2) != null) {
+                secondMemberNextRank = secondMemberNextRank + 2;
+                secondMemberNextRankId = rankingsMap.get(secondMemberNextRank);
+            }
+            // В другом случае повышаем +1
             else {
                 secondMemberNextRank = secondMemberNextRank + 1;
                 secondMemberNextRankId = rankingsMap.get(secondMemberNextRank);
             }
+            // Устанавливаем победы/поражения
             secondFighter.setWins(secondFighterWins + 1);
             secondFighter.setWinStreak(secondFighterWinStreak + 1);
             firstFighter.setLoses(firstFighterLoses + 1);
@@ -114,6 +160,7 @@ public class ButtonWinner implements IButtonCommand {
                 firstFighter.setWinStreak(0L);
             }
         }
+
         log.debug("Отметка о рангах : " +
                         "Текущий ранг 1го бойца = {}. " +
                         "Текущий ранг 2го бойца = {}. " +
@@ -123,6 +170,16 @@ public class ButtonWinner implements IButtonCommand {
                 , guild.getRoleById(secondMemberCurrentRankId)
                 , guild.getRoleById(firstMemberNextRankId)
                 , guild.getRoleById(secondMemberNextRankId));
+
+        // Титул "Сизиф"
+        if (!Configuration.getInstance().isInDebugMode()) {
+            if (firstFighter.getWins() < firstFighter.getLoses()) {
+                guild.addRoleToMember(firstFighter.getId(), guild.getRoleById(906167897532018768L));
+            }
+            if (secondFighter.getWins() < secondFighter.getLoses()) {
+                guild.addRoleToMember(secondFighter.getId(), guild.getRoleById(906167897532018768L));
+            }
+        }
 
         // Убираем роль у первого бойца
         guild.removeRoleFromMember(firstFighter.getId(), guild.getRoleById(firstMemberCurrentRankId)).complete();

@@ -7,12 +7,14 @@ import FightBot.utils.Utils;
 import FightBot.entities.FightMessage;
 import FightBot.interfaces.IButtonCommand;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 
 @Slf4j
 public class ButtonDecline implements IButtonCommand {
     @Override
     public void handle(String arg, ButtonClickEvent event) {
+        TextChannel channel = event.getTextChannel();
         FightMessage fightMessage = Utils.getInstance().fightMessages.get(event.getMessage().getIdLong());
         Fighter firstFighter = fightMessage.getFirstFighter();
         Fighter secondFighter = fightMessage.getSecondFighter();
@@ -25,6 +27,11 @@ public class ButtonDecline implements IButtonCommand {
             Utils.getInstance().lockedFightersList.remove(secondFighter.getId());
 
             event.getHook().deleteOriginal().queue();
+            channel.sendMessage(event.getGuild().getMemberById(firstFighter.getId()).getAsMention()
+                    + event.getGuild().getMemberById(secondFighter.getId()).getAsMention()
+                    + "\nВызов " + firstFighter.getDiscordName() + " против "
+                    + secondFighter.getDiscordName() + " был отклонен!")
+                    .queue();
         }
 
         log.debug("List of locked fighters on decline button :{}", Utils.getInstance().lockedFightersList.toString());

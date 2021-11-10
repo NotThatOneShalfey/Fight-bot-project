@@ -46,6 +46,7 @@ public class AvailableCommand implements ICommand {
 
         List<String> availableFightersNames = new ArrayList<>();
         List<String> availableFightersRanks = new ArrayList<>();
+        List<String> availableFightersClasses = new ArrayList<>();
 
         for (Map.Entry<Long, Fighter> entry : fighters.entrySet()) {
             if (entry.getKey() != fighter.getId()) {
@@ -59,6 +60,7 @@ public class AvailableCommand implements ICommand {
                             && !Utils.getInstance().fightDatesList.contains(Map.entry(LocalDate.now(), Map.entry(fighterTo.getId(), fighter.getId())))) {
                         if (!event.getGuild().getMemberById(entry.getValue().getId()).getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
                             availableFightersNames.add(entry.getValue().getDiscordName());
+                            availableFightersClasses.add(String.join(", ", entry.getValue().getClasses()));
                             availableFightersRanks.add(entry.getValue().getRankName());
                         }
                     }
@@ -67,7 +69,9 @@ public class AvailableCommand implements ICommand {
         }
 
         if (!availableFightersNames.isEmpty()) {
-            textChannel.sendMessageEmbeds(buildEmbed(String.join("\n", availableFightersNames), String.join("\n", availableFightersRanks)))
+            textChannel.sendMessageEmbeds(buildEmbed(String.join("\n", availableFightersNames)
+                                                    , String.join("\n", availableFightersRanks)
+                                                    , String.join("\n", availableFightersClasses)))
                     .queue(
                             (message) -> message.delete().queueAfter(120L, TimeUnit.SECONDS)
                     );
@@ -102,10 +106,11 @@ public class AvailableCommand implements ICommand {
         return true;
     }
 
-    private MessageEmbed buildEmbed(String names, String ranks) {
+    private MessageEmbed buildEmbed(String names, String ranks, String classes) {
         EmbedBuilder eBuilder = new EmbedBuilder();
         eBuilder.setTitle("Список доступных для вызова бойцов")
                 .addField("Имя в дискорде", names, true)
+                .addField("Классы", classes, true)
                 .addField("Ранг", ranks, true);
         return eBuilder.build();
     }
