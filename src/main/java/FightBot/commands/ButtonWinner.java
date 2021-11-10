@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 
 import java.time.LocalDate;
@@ -173,11 +174,21 @@ public class ButtonWinner implements IButtonCommand {
 
         // Титул "Сизиф"
         if (!Configuration.getInstance().isInDebugMode()) {
-            if (firstFighter.getWins() < firstFighter.getLoses()) {
-                guild.addRoleToMember(firstFighter.getId(), guild.getRoleById(906167897532018768L));
+            // Получение роли
+            Role title = guild.getRoleById(906167897532018768L);
+            // Проверяем победы поражения первого игрока
+            if (firstFighter.getWins() < firstFighter.getLoses() && !guild.getMemberById(firstFighter.getId()).getRoles().contains(title)) {
+                guild.addRoleToMember(firstFighter.getId(), title).queue();
             }
-            if (secondFighter.getWins() < secondFighter.getLoses()) {
-                guild.addRoleToMember(secondFighter.getId(), guild.getRoleById(906167897532018768L));
+            else if (firstFighter.getWins() >= firstFighter.getLoses() && guild.getMemberById(firstFighter.getId()).getRoles().contains(title)) {
+                guild.removeRoleFromMember(firstFighter.getId(), title).queue();
+            }
+            // Проверяем победы поражения второго игрока
+            if (secondFighter.getWins() < secondFighter.getLoses() && !guild.getMemberById(secondFighter.getId()).getRoles().contains(title)) {
+                guild.addRoleToMember(secondFighter.getId(), title).queue();
+            }
+            else if (secondFighter.getWins() >= secondFighter.getLoses() && guild.getMemberById(secondFighter.getId()).getRoles().contains(title)) {
+                guild.removeRoleFromMember(secondFighter.getId(), title).queue();
             }
         }
 
