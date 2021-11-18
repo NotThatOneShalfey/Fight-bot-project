@@ -99,6 +99,7 @@ public class CommandManager {
         this.addCommand(new CancelCommand());
         this.addCommand(new ActiveCommand());
         this.addCommand(new InactiveCommand());
+        this.addCommand(new RandomCommand());
         this.addButtonCommand(new ButtonAccept());
         this.addButtonCommand(new ButtonDecline());
         this.addButtonCommand(new ButtonWinner());

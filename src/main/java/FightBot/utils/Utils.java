@@ -1,5 +1,6 @@
 package FightBot.utils;
 
+import FightBot.entities.FightDateLock;
 import FightBot.entities.FightMessage;
 import FightBot.entities.Fighter;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
@@ -44,12 +46,13 @@ public class Utils {
 
     public Map<Long, Fighter> fighters = new HashMap<>();
     public Map<Long, FightMessage> fightMessages = new HashMap<>();
-    public List<Map.Entry<LocalDate, Map.Entry<Long, Long>>> fightDatesList = new ArrayList<>();
+
+    public List<FightDateLock> fightDatesList = new ArrayList<>();
 
     @Setter
     public List<Long> lockedFightersList = new ArrayList<>();
 
-    private static final Random RANDOM = new Random();
+    public static final Random RANDOM = new Random();
 
     public static Color getRandomColor() {
         float r = RANDOM.nextFloat();
@@ -58,6 +61,19 @@ public class Utils {
 
         return new Color(r, g, b);
     }
+
+    public List<Fighter> getListOfAvailableFighters(Fighter initialFighter) {
+        Collection<Fighter> fightersColl = fighters.values();
+        return fightersColl.stream()
+                .filter(fighter ->
+                        fighter.getId() != initialFighter.getId()
+                        && (fighter.isActive() || !FightBot.configuration.Configuration.getInstance().isOnlyActiveSearch())
+                        && fighter.getRank() - initialFighter.getRank() < FightBot.configuration.Configuration.getInstance().getRankDifference()
+                        && fighter.getRank() - initialFighter.getRank() >= 0
+                        && !fightDatesList.contains(new FightDateLock(LocalDate.now(), fighter.getId(), initialFighter.getId())))
+                .collect(Collectors.toList());
+    }
+
 
     public void saveHistory() throws IOException {
         generateFile(mapper.writeValueAsString(fightMessages), fightMapFile);
@@ -136,7 +152,7 @@ public class Utils {
         }
         if (fightDatesFile.exists() && fightDatesFile.length() > 0) {
             log.info("Getting fight dates history from text file on Startup");
-            TypeReference<List<Map.Entry<LocalDate, Map.Entry<Long, Long>>>> ref = new TypeReference<>() {};
+            TypeReference<List<FightDateLock>> ref = new TypeReference<>() {};
             fightDatesList = mapper.readValue(fightDatesFile, ref);
         }
         else {

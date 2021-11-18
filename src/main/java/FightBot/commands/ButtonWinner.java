@@ -1,6 +1,7 @@
 package FightBot.commands;
 
 import FightBot.configuration.Configuration;
+import FightBot.entities.FightDateLock;
 import FightBot.entities.Fighter;
 import FightBot.utils.Constants;
 import FightBot.utils.Utils;
@@ -226,7 +227,8 @@ public class ButtonWinner implements IButtonCommand {
         log.debug("List of locked fighters on winner button : {}", Utils.getInstance().lockedFightersList.toString());
 
         Utils.getInstance().fightMessages.remove(event.getMessage().getIdLong());
-        Utils.getInstance().fightDatesList.add(Map.entry(LocalDate.now(), Map.entry(firstFighter.getId(), secondFighter.getId())));
+
+        Utils.getInstance().fightDatesList.add(new FightDateLock(LocalDate.now(), firstFighter.getId(), secondFighter.getId()));
     }
 
     @Override

@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,33 +41,18 @@ public class AvailableCommand implements ICommand {
             return;
         }
 
-        fighter.getRank();
-
         List<String> availableFightersNames = new ArrayList<>();
         List<String> availableFightersRanks = new ArrayList<>();
         List<String> availableFightersClasses = new ArrayList<>();
 
-        for (Map.Entry<Long, Fighter> entry : fighters.entrySet()) {
-            if (entry.getKey() != fighter.getId()) {
-                Fighter fighterTo = entry.getValue();
-                // Проверка на ранги
-                if (fighterTo.getRank() - fighter.getRank() >= 0L
-                        && fighterTo.getRank() - fighter.getRank() <= Configuration.getInstance().getRankDifference()
-                        && !Utils.getInstance().lockedFightersList.contains(fighterTo.getId())) {
-                    // Проверка на то, что с игроком еще не дрались
-                    if (!Utils.getInstance().fightDatesList.contains(Map.entry(LocalDate.now(), Map.entry(fighter.getId(), fighterTo.getId())))
-                            && !Utils.getInstance().fightDatesList.contains(Map.entry(LocalDate.now(), Map.entry(fighterTo.getId(), fighter.getId())))) {
-                        if (event.getGuild().getMemberById(entry.getValue().getId()) != null
-                                && !event.getGuild().getMemberById(entry.getValue().getId()).getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
-                            // Проверка на статус игрока (активный/неактивный)
-                            if (fighterTo.isActive() || !Configuration.getInstance().isOnlyActiveSearch()) {
-                                availableFightersNames.add(entry.getValue().getDiscordName());
-                                availableFightersClasses.add(String.join(", ", entry.getValue().getClasses()));
-                                availableFightersRanks.add(entry.getValue().getRankName());
-                            }
-                        }
-                    }
-                }
+        // Идем по списку доступных противников
+        for (Fighter fighterTo : Utils.getInstance().getListOfAvailableFighters(fighter)) {
+            // Проверка статуса в дискорде
+            if (event.getGuild().getMemberById(fighterTo.getId()) != null
+                    && !event.getGuild().getMemberById(fighterTo.getId()).getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
+                availableFightersNames.add(fighterTo.getDiscordName());
+                availableFightersClasses.add(String.join(", ", fighterTo.getClasses()));
+                availableFightersRanks.add(fighterTo.getRankName());
             }
         }
 

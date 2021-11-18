@@ -1,6 +1,7 @@
 package FightBot.commands;
 
 import FightBot.configuration.Configuration;
+import FightBot.entities.FightDateLock;
 import FightBot.entities.Fighter;
 import FightBot.utils.Constants;
 import FightBot.utils.Utils;
@@ -82,19 +83,14 @@ public class FightCommand implements ICommand {
             return;
         }
 
-        // Проверка на дату
-        if (!Configuration.getInstance().isInDebugMode() && !Utils.getInstance().fightDatesList.isEmpty()) {
-            for (Map.Entry<LocalDate, Map.Entry<Long, Long>> entry : Utils.getInstance().fightDatesList) {
-                if (entry.getKey().equals(LocalDate.now())) {
-                    if ((entry.getValue().getKey().equals(firstFighter.getId()) && entry.getValue().getValue().equals(secondFighter.getId()))
-                            || (entry.getValue().getKey().equals(secondFighter.getId()) && entry.getValue().getValue().equals(firstFighter.getId()))) {
-                        textChannel.sendMessage(String.format(Constants.ON_DATE_TOO_EARLY_CALL, event.getAuthor().getAsMention())).queue(
-                                (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
-                        );
-                        return;
-                    }
-                }
-            }
+        // Тест проверка на дату
+        if (!Configuration.getInstance().isInDebugMode()
+                && !Utils.getInstance().fightDatesList.isEmpty()
+                && !Utils.getInstance().fightDatesList.contains(new FightDateLock(LocalDate.now(), firstFighter.getId(), secondFighter.getId()))) {
+            textChannel.sendMessage(String.format(Constants.ON_DATE_TOO_EARLY_CALL, event.getAuthor().getAsMention())).queue(
+                    (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
+            );
+            return;
         }
 
         //Здесь проверка, если не нашли ранги
