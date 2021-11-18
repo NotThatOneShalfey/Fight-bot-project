@@ -86,7 +86,7 @@ public class FightCommand implements ICommand {
         // Тест проверка на дату
         if (!Configuration.getInstance().isInDebugMode()
                 && !Utils.getInstance().fightDatesList.isEmpty()
-                && !Utils.getInstance().fightDatesList.contains(new FightDateLock(LocalDate.now(), firstFighter.getId(), secondFighter.getId()))) {
+                && Utils.getInstance().fightDatesList.contains(new FightDateLock(LocalDate.now(), firstFighter.getId(), secondFighter.getId()))) {
             textChannel.sendMessage(String.format(Constants.ON_DATE_TOO_EARLY_CALL, event.getAuthor().getAsMention())).queue(
                     (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
             );
