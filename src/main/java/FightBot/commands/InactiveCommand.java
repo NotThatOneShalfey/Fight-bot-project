@@ -38,7 +38,7 @@ public class InactiveCommand implements ICommand {
 
     @Override
     public String getHelp() {
-        return "";
+        return "Команда позволяет установить отметку о том, что боец не готов к бою и не хочет появляться в списке доступных для вызова бойцов.";
     }
 
     @Override
@@ -53,6 +53,6 @@ public class InactiveCommand implements ICommand {
 
     @Override
     public boolean isVisible() {
-        return false;
+        return true;
     }
 }

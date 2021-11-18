@@ -36,7 +36,7 @@ public class ActiveCommand implements ICommand {
 
     @Override
     public String getHelp() {
-        return "";
+        return "Команда позволяет установить отметку о том, что боец готов к бою и хочет появляться в списке доступных бойцов для вызова.";
     }
 
     @Override
@@ -51,6 +51,6 @@ public class ActiveCommand implements ICommand {
 
     @Override
     public boolean isVisible() {
-        return false;
+        return true;
     }
 }
