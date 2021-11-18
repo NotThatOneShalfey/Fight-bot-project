@@ -58,10 +58,14 @@ public class AvailableCommand implements ICommand {
                     // Проверка на то, что с игроком еще не дрались
                     if (!Utils.getInstance().fightDatesList.contains(Map.entry(LocalDate.now(), Map.entry(fighter.getId(), fighterTo.getId())))
                             && !Utils.getInstance().fightDatesList.contains(Map.entry(LocalDate.now(), Map.entry(fighterTo.getId(), fighter.getId())))) {
-                        if (!event.getGuild().getMemberById(entry.getValue().getId()).getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
-                            availableFightersNames.add(entry.getValue().getDiscordName());
-                            availableFightersClasses.add(String.join(", ", entry.getValue().getClasses()));
-                            availableFightersRanks.add(entry.getValue().getRankName());
+                        if (event.getGuild().getMemberById(entry.getValue().getId()) != null
+                                && !event.getGuild().getMemberById(entry.getValue().getId()).getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
+                            // Проверка на статус игрока (активный/неактивный)
+                            if (fighterTo.isActive() || !Configuration.getInstance().isOnlyActiveSearch()) {
+                                availableFightersNames.add(entry.getValue().getDiscordName());
+                                availableFightersClasses.add(String.join(", ", entry.getValue().getClasses()));
+                                availableFightersRanks.add(entry.getValue().getRankName());
+                            }
                         }
                     }
                 }

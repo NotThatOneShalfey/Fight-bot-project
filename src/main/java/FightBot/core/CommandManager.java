@@ -97,6 +97,8 @@ public class CommandManager {
         this.addCommand(new RankCommand());
         this.addCommand(new AvailableCommand());
         this.addCommand(new CancelCommand());
+        this.addCommand(new ActiveCommand());
+        this.addCommand(new InactiveCommand());
         this.addButtonCommand(new ButtonAccept());
         this.addButtonCommand(new ButtonDecline());
         this.addButtonCommand(new ButtonWinner());

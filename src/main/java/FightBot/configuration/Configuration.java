@@ -30,6 +30,7 @@ public class Configuration {
     private long historyDeleterDelay;
     private long DeleterSleepTimeout = 10;
     private long SaverSleepTimeout = 30;
+    private boolean onlyActiveSearch = false;
     private String token;
     private List<Long> referees = new ArrayList<>();
     public Map<Long, Long> rankingsMap = new HashMap<>();

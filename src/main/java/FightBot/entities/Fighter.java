@@ -23,6 +23,7 @@ public class Fighter {
     private Long wins = 0L;
     private Long loses = 0L;
     private Long winStreak = 0L;
+    private boolean active = false;
 
     public Fighter(Member member) {
         this.id = member.getIdLong();

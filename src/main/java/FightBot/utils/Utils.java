@@ -90,6 +90,20 @@ public class Utils {
         log.info("Roles check up has ended");
     }
 
+    public void checkMembersOnCall() {
+        log.info("Start members check up");
+        Guild guild = manager.getGuildById(FightBot.configuration.Configuration.getInstance().getGuildId());
+        Iterator<Map.Entry<Long, Fighter>> iterator = fighters.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Long, Fighter> entry = iterator.next();
+            if (guild.getMemberById(entry.getKey()) == null) {
+                iterator.remove();
+                log.info("Fighter with ID = {} and discord name = {} has been removed", entry.getKey(), entry.getValue().getDiscordName());
+            }
+        }
+        log.info("Members check up has ended");
+    }
+
     @PostConstruct
     private void init() throws IOException {
         instance = this;
