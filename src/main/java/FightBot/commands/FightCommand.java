@@ -83,7 +83,7 @@ public class FightCommand implements ICommand {
             return;
         }
 
-        // Тест проверка на дату
+        // Проверка на дату
         if (!Configuration.getInstance().isInDebugMode()
                 && !Utils.getInstance().fightDatesList.isEmpty()
                 && Utils.getInstance().fightDatesList.contains(new FightDateLock(LocalDate.now(), firstFighter.getId(), secondFighter.getId()))) {
