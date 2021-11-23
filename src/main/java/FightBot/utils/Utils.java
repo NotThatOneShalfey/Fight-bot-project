@@ -101,7 +101,14 @@ public class Utils {
             if (guild.getRoleById(id) == null) {
                 log.warn("Title with ID = {} does not exist", id);
             }
-
+        }
+        for (Map.Entry<Long, Long> entry : FightBot.configuration.Configuration.getInstance().thresholdsMap.entrySet()) {
+            if (guild.getRoleById(entry.getValue()) == null) {
+                log.warn("Threshold role with ID = {} does not exist", entry.getValue());
+            }
+        }
+        if (guild.getRoleById(FightBot.configuration.Configuration.getInstance().getActiveStatusRoleId()) == null) {
+            log.warn("Active status role with id {} does not exist", FightBot.configuration.Configuration.getInstance().getActiveStatusRoleId());
         }
         log.info("Roles check up has ended");
     }

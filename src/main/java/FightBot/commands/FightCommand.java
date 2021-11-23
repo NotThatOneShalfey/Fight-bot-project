@@ -59,7 +59,7 @@ public class FightCommand implements ICommand {
             return;
         }
 
-        //Проверка зареган ли второй боец
+        // Проверка зареган ли второй боец
         if (secondFighter == null) {
             textChannel.sendMessage(String.format(Constants.ON_SOMEONE_NON_EXISTING_REGISTER, event.getGuild().getMemberById(mentionedUsers.get(0).getIdLong()).getAsMention())).queue(
                     (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
@@ -93,7 +93,7 @@ public class FightCommand implements ICommand {
             return;
         }
 
-        //Здесь проверка, если не нашли ранги
+        // Здесь проверка, если не нашли ранги
         if (firstFighter.getRank() == null || secondFighter.getRank() == null) {
             textChannel.sendMessage(String.format(Constants.ON_NON_EXISTING_RANK, event.getAuthor().getAsMention())).queue(
                     (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
@@ -101,7 +101,7 @@ public class FightCommand implements ICommand {
             return;
         }
 
-        //Здесь проверка если разница в рангах не проходит
+        // Здесь проверка если разница в рангах не проходит
         if (secondFighter.getRank() - firstFighter.getRank() > Configuration.getInstance().getRankDifference()
                 || firstFighter.getRank() > secondFighter.getRank()) {
             textChannel.sendMessage(String.format(Constants.ON_LOW_RANK_CALL, event.getAuthor().getAsMention())).queue(

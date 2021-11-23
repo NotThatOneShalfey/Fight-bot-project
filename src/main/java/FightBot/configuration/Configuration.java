@@ -7,10 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @org.springframework.context.annotation.Configuration
@@ -26,15 +23,20 @@ public class Configuration {
     private long guildId;
     private long publicChannelId;
     private long historyChannelId;
+    private long rulesChannelId;
+    private long ranksChannelId;
     private long publicDeleterDelay;
+    private long championRankId;
     private long historyDeleterDelay;
-    private long DeleterSleepTimeout = 10;
-    private long SaverSleepTimeout = 30;
+    private long deleterSleepTimeout = 10;
+    private long saverSleepTimeout = 30;
+    private long activeStatusRoleId;
     private boolean onlyActiveSearch = false;
     private String token;
     private List<Long> referees = new ArrayList<>();
     public Map<Long, Long> rankingsMap = new HashMap<>();
     public List<Long> titlesList = new ArrayList<>();
+    public Map<Long, Long> thresholdsMap = new HashMap<>();
     private Long rankDifference = 2L;
     public static final String FIGHT_DATES_MESSAGES_PATH = System.getProperty("user.dir") + File.separator + "fight_dates.txt";
     public static final String FIGHT_MESSAGES_PATH = System.getProperty("user.dir") + File.separator + "fight_messages.txt";

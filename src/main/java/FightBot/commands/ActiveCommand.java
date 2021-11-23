@@ -1,5 +1,6 @@
 package FightBot.commands;
 
+import FightBot.configuration.Configuration;
 import FightBot.entities.Fighter;
 import FightBot.interfaces.ICommand;
 import FightBot.utils.Utils;
@@ -26,9 +27,10 @@ public class ActiveCommand implements ICommand {
 
         Fighter fighter = Utils.getInstance().fighters.get(event.getMember().getIdLong());
 
-        if (fighter != null) {
+        if (fighter != null && !fighter.isActive()) {
             fighter.setActive(true);
             Utils.getInstance().fighters.put(fighter.getId(), fighter);
+            event.getGuild().addRoleToMember(fighter.getId(), event.getGuild().getRoleById(Configuration.getInstance().getActiveStatusRoleId())).queue();
             textChannel.sendMessage(fighter.getDiscordName() + ", вы находитесь в активном поиске противника.").queue((message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS));
         }
 

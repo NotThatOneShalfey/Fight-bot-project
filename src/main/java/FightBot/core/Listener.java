@@ -52,6 +52,7 @@ public class Listener extends ListenerAdapter {
             event.getMessage().delete().complete();
             Utils.getInstance().checkRolesOnCall();
         }
+
     }
 
     @Override

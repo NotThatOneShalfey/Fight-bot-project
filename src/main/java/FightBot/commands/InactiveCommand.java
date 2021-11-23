@@ -1,5 +1,6 @@
 package FightBot.commands;
 
+import FightBot.configuration.Configuration;
 import FightBot.entities.Fighter;
 import FightBot.interfaces.ICommand;
 import FightBot.utils.Utils;
@@ -26,11 +27,10 @@ public class InactiveCommand implements ICommand {
 
         Fighter fighter = Utils.getInstance().fighters.get(event.getMember().getIdLong());
 
-        if (fighter != null) {
-            if (fighter.isActive()) {
-                fighter.setActive(false);
-                Utils.getInstance().fighters.put(fighter.getId(), fighter);
-            }
+        if (fighter != null && fighter.isActive()) {
+            fighter.setActive(false);
+            Utils.getInstance().fighters.put(fighter.getId(), fighter);
+            event.getGuild().removeRoleFromMember(fighter.getId(), event.getGuild().getRoleById(Configuration.getInstance().getActiveStatusRoleId())).queue();
             textChannel.sendMessage(fighter.getDiscordName() + ", вы исключены из активного поиска.").queue((message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS));
         }
 

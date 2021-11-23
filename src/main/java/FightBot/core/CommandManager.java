@@ -100,6 +100,7 @@ public class CommandManager {
         this.addCommand(new ActiveCommand());
         this.addCommand(new InactiveCommand());
         this.addCommand(new RandomCommand());
+        this.addCommand(new InitDescriptionCommand());
         this.addButtonCommand(new ButtonAccept());
         this.addButtonCommand(new ButtonDecline());
         this.addButtonCommand(new ButtonWinner());
