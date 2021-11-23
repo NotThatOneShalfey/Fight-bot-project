@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static FightBot.utils.Constants.ON_LOW_RANK_OR_EARLY_CALL;
+
 @Slf4j
 public class FightCommand implements ICommand {
     AvailableCommand command = new AvailableCommand();
@@ -87,16 +89,6 @@ public class FightCommand implements ICommand {
             return;
         }
 
-        // Проверка на дату
-        if (!Configuration.getInstance().isInDebugMode()
-                && !Utils.getInstance().fightDatesList.isEmpty()
-                && Utils.getInstance().fightDatesList.contains(new FightDateLock(LocalDate.now(), firstFighter.getId(), secondFighter.getId()))) {
-            textChannel.sendMessage(String.format(Constants.ON_DATE_TOO_EARLY_CALL, event.getAuthor().getAsMention())).queue(
-                    (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
-            );
-            return;
-        }
-
         // Здесь проверка, если не нашли ранги
         if (firstFighter.getRank() == null || secondFighter.getRank() == null) {
             textChannel.sendMessage(String.format(Constants.ON_NON_EXISTING_RANK, event.getAuthor().getAsMention())).queue(
@@ -105,14 +97,31 @@ public class FightCommand implements ICommand {
             return;
         }
 
-        // Здесь проверка если разница в рангах не проходит
-        if (secondFighter.getRank() - firstFighter.getRank() > Configuration.getInstance().getRankDifference()
-                || firstFighter.getRank() > secondFighter.getRank()) {
-            textChannel.sendMessage(String.format(Constants.ON_LOW_RANK_CALL, event.getAuthor().getAsMention())).queue(
+        // Проверка на дату и ранги
+        if (!Utils.getInstance().getListOfAvailableFighters(firstFighter).contains(secondFighter)) {
+            textChannel.sendMessage(String.format(ON_LOW_RANK_OR_EARLY_CALL, event.getAuthor().getAsMention())).queue(
                     (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
             );
             return;
         }
+//        // Проверка на дату
+//        if (!Configuration.getInstance().isInDebugMode()
+//                && !Utils.getInstance().fightDatesList.isEmpty()
+//                && Utils.getInstance().fightDatesList.contains(new FightDateLock(LocalDate.now(), firstFighter.getId(), secondFighter.getId()))) {
+//            textChannel.sendMessage(String.format(Constants.ON_DATE_TOO_EARLY_CALL, event.getAuthor().getAsMention())).queue(
+//                    (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
+//            );
+//            return;
+//        }
+//
+//        // Здесь проверка если разница в рангах не проходит
+//        if (secondFighter.getRank() - firstFighter.getRank() > Configuration.getInstance().getRankDifference()
+//                || firstFighter.getRank() > secondFighter.getRank()) {
+//            textChannel.sendMessage(String.format(Constants.ON_LOW_RANK_CALL, event.getAuthor().getAsMention())).queue(
+//                    (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
+//            );
+//            return;
+//        }
 
         FightMessage fightMessage = new FightMessage(firstFighter, secondFighter);
         fightMessage.setChannelId(event.getChannel().getIdLong());

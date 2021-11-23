@@ -20,6 +20,7 @@ public class Fighter {
     private String rankName;
     private List<String> classes = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
+    private Long threshold = 0L;
     private Long wins = 0L;
     private Long loses = 0L;
     private Long winStreak = 0L;

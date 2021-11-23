@@ -70,7 +70,7 @@ public class Utils {
                         fighter.getId() != initialFighter.getId()
                         && (fighter.isActive() || !FightBot.configuration.Configuration.getInstance().isOnlyActiveSearch())
                         && fighter.getRank() - initialFighter.getRank() < FightBot.configuration.Configuration.getInstance().getRankDifference()
-                        && fighter.getRank() - initialFighter.getRank() >= 0
+                        && fighter.getThreshold() >= initialFighter.getThreshold()
                         && !fightDatesList.contains(new FightDateLock(LocalDate.now(), fighter.getId(), initialFighter.getId())))
                 .collect(Collectors.toList());
     }
@@ -114,6 +114,17 @@ public class Utils {
             log.warn("Active status role with id {} does not exist", FightBot.configuration.Configuration.getInstance().getActiveStatusRoleId());
         }
         log.info("Roles check up has ended");
+    }
+
+    public void checkThresholdsOnCall() {
+        log.info("Start fighters thresholds check");
+        for (Map.Entry<Long, Fighter> entry : fighters.entrySet()) {
+            if (entry.getValue().getThreshold() == null) {
+                log.warn("Change threshold from null to 0 on {}", entry.getValue());
+                entry.getValue().setThreshold(0L);
+            }
+        }
+        log.info("Fighters thresholds check has ended");
     }
 
     public void checkMembersOnCall() {

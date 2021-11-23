@@ -25,6 +25,7 @@ public class Listener extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         Utils.getInstance().checkRolesOnCall();
         Utils.getInstance().checkMembersOnCall();
+        Utils.getInstance().checkThresholdsOnCall();
         log.info("Hello!! Now you are up to work!");
         saverThread.setDaemon(true);
         saverThread.start();
