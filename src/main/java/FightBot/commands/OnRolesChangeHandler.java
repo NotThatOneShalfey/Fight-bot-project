@@ -8,10 +8,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -24,6 +20,12 @@ public class OnRolesChangeHandler {
             return;
         }
         log.info("OnRolesRemove : {} to {}", event.getRoles(), event.getMember());
+
+        // Если удаляется роль рефери удаляем из списка рефери
+        if (event.getRoles().contains(event.getGuild().getRoleById(Configuration.getInstance().getRefereeRoleId()))) {
+            Configuration.getInstance().referees.remove(event.getMember().getIdLong());
+        }
+
         Fighter fighter = fighters.get(event.getMember().getIdLong());
 
         for (Role role : event.getRoles()) {
@@ -35,15 +37,17 @@ public class OnRolesChangeHandler {
     }
 
     public void handleRolesAdd(GuildMemberRoleAddEvent event) {
+        // Если добавляется роль рефери добавляем в список рефери
+        if (event.getRoles().contains(event.getGuild().getRoleById(Configuration.getInstance().getRefereeRoleId()))) {
+            Configuration.getInstance().referees.add(event.getMember().getIdLong());
+        }
+        log.info("OnRolesAdd : {} to {}", event.getRoles(), event.getMember());
         // Проверка была ли выдана роль зареганному бойцу
         if (!fighters.containsKey(event.getMember().getIdLong())) {
             return;
         }
-        log.info("OnRolesAdd : {} to {}", event.getRoles(), event.getMember());
         Fighter fighter = fighters.get(event.getMember().getIdLong());
-
         handleThreshold(event, fighter);
-
         for (Role role : event.getRoles()){
             if (Configuration.getInstance().titlesList.contains(role.getIdLong())) {
                 fighter.getTitles().add(role.getName());

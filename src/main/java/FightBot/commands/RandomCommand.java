@@ -1,5 +1,6 @@
 package FightBot.commands;
 
+import FightBot.configuration.Configuration;
 import FightBot.entities.Fighter;
 import FightBot.interfaces.ICommand;
 import FightBot.utils.Constants;
@@ -18,6 +19,9 @@ public class RandomCommand implements ICommand {
 
     @Override
     public void handle(List<String> args, GuildMessageReceivedEvent event) {
+        if (event.getChannel().getIdLong() != Configuration.getInstance().getPublicChannelId()) {
+            return;
+        }
         TextChannel textChannel = event.getChannel();
         Member bot = event.getGuild().getSelfMember();
 

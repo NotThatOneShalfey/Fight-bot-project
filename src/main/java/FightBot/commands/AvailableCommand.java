@@ -23,6 +23,9 @@ import java.util.concurrent.TimeUnit;
 public class AvailableCommand implements ICommand {
     @Override
     public void handle(List<String> args, GuildMessageReceivedEvent event) {
+        if (event.getChannel().getIdLong() != Configuration.getInstance().getPublicChannelId()) {
+            return;
+        }
         TextChannel textChannel = event.getChannel();
         Member bot = event.getGuild().getSelfMember();
         // Удаление сообщения команды

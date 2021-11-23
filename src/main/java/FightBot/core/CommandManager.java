@@ -62,9 +62,6 @@ public class CommandManager {
     }
 
     public void handleCommand(GuildMessageReceivedEvent event) {
-        if (event.getChannel().getIdLong() != Configuration.getInstance().getPublicChannelId()) {
-            return;
-        }
         final String[] split = event.getMessage().getContentRaw().replaceFirst("(?i)" + Pattern.quote(Configuration.getInstance().getPrefix()), "").split("\\s+");
         final String commandName = split[0].toLowerCase();
         log.info("Regular command - {}, Caller id = {}, name = {}", commandName, event.getMember().getIdLong(), event.getMember().getEffectiveName());

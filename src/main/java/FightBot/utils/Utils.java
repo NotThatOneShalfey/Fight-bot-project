@@ -43,6 +43,7 @@ public class Utils {
     private final File lockedFightersFile = new File(FightBot.configuration.Configuration.LOCKED_FIGHTERS_PATH);
     private final File fightersFile = new File(FightBot.configuration.Configuration.FIGHTERS_PATH);
     private final File fightDatesFile = new File(FightBot.configuration.Configuration.FIGHT_DATES_MESSAGES_PATH);
+    private final File refereeListFile = new File(FightBot.configuration.Configuration.REFEREES_PATH);
 
     public Map<Long, Fighter> fighters = new HashMap<>();
     public Map<Long, FightMessage> fightMessages = new HashMap<>();
@@ -80,6 +81,7 @@ public class Utils {
         generateFile(mapper.writeValueAsString(lockedFightersList), lockedFightersFile);
         generateFile(mapper.writeValueAsString(fighters), fightersFile);
         generateFile(mapper.writeValueAsString(fightDatesList), fightDatesFile);
+        generateFile(mapper.writeValueAsString(FightBot.configuration.Configuration.getInstance().getReferees()), refereeListFile);
     }
 
     private void generateFile(String str, File file) throws IOException {
@@ -92,6 +94,7 @@ public class Utils {
     public void checkRolesOnCall() {
         log.info("Start roles check up");
         Guild guild = manager.getGuildById(FightBot.configuration.Configuration.getInstance().getGuildId());
+        log.info("Guild : {}", guild.toString());
         for (Map.Entry<Long, Long> entry : FightBot.configuration.Configuration.getInstance().rankingsMap.entrySet()) {
             if (guild.getRoleById(entry.getValue()) == null) {
                 log.warn("Role with ID = {}, rank level = {} does not exist", entry.getValue(), entry.getKey());
@@ -164,6 +167,14 @@ public class Utils {
         }
         else {
             log.info("File with fight dates history is empty or not present");
+        }
+        if (refereeListFile.exists() && refereeListFile.length() > 0) {
+            log.info("Getting referees from text file on Startup");
+            TypeReference<List<Long>> ref = new TypeReference<>() {};
+            FightBot.configuration.Configuration.getInstance().setReferees(mapper.readValue(refereeListFile, ref));
+        }
+        else {
+            log.info("File with referees is empty or not present");
         }
         log.info("<------------ INIT END -------------->");
     }

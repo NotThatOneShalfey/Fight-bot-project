@@ -1,14 +1,13 @@
 package FightBot.commands;
 
+import FightBot.configuration.Configuration;
 import FightBot.entities.Fighter;
 import FightBot.interfaces.ICommand;
 import FightBot.utils.Constants;
 import FightBot.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -21,6 +20,9 @@ import java.util.concurrent.TimeUnit;
 public class RankCommand implements ICommand {
     @Override
     public void handle(List<String> args, GuildMessageReceivedEvent event) {
+        if (event.getChannel().getIdLong() != Configuration.getInstance().getPublicChannelId()) {
+            return;
+        }
         TextChannel textChannel = event.getChannel();
         Member bot = event.getGuild().getSelfMember();
         List<User> mentionedUsers = event.getMessage().getMentionedUsers();

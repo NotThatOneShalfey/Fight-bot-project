@@ -176,7 +176,7 @@ public class ButtonWinner implements IButtonCommand {
         // Титул "Сизиф"
         if (!Configuration.getInstance().isInDebugMode()) {
             // Получение роли
-            Role title = guild.getRoleById(906167897532018768L);
+            Role title = guild.getRoleById(910971199755010108L);
             // Проверяем победы поражения первого игрока
             if (firstFighter.getWins() < firstFighter.getLoses() && !guild.getMemberById(firstFighter.getId()).getRoles().contains(title)) {
                 guild.addRoleToMember(firstFighter.getId(), title).queue();

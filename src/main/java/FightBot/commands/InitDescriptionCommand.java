@@ -3,11 +3,13 @@ package FightBot.commands;
 import FightBot.configuration.Configuration;
 import FightBot.interfaces.ICommand;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class InitDescriptionCommand implements ICommand {
 
@@ -18,11 +20,17 @@ public class InitDescriptionCommand implements ICommand {
             return;
         }
 
+        // Удаление сообщения команды
+        if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+            event.getMessage().delete().queueAfter(5L, TimeUnit.SECONDS);
+        }
+
         TextChannel rulesChannel = event.getGuild().getTextChannelById(Configuration.getInstance().getRulesChannelId());
         TextChannel ranksChannel = event.getGuild().getTextChannelById(Configuration.getInstance().getRanksChannelId());
 
         long publicChannel = Configuration.getInstance().getPublicChannelId();
         long historyChannel = Configuration.getInstance().getHistoryChannelId();
+        long floodilkaChannel = Configuration.getInstance().getFloodilkaChannelId();
 
         // Начало билда для канала с правилами
         EmbedBuilder builder1 = new EmbedBuilder();
@@ -41,8 +49,9 @@ public class InitDescriptionCommand implements ICommand {
                                 "3. Все бои проходят на премиум персонажах, которых вы выбрали во время регистрации.\n\n" +
                                 "4. Все бои проходят до 10 побед, ни больше, ни меньше.\n\n" +
                                 "5. Запрещается во время боя менять класс и стойку класса.\n\n" +
-                                "6. Нет никаких ограничений на использования алхимки, еды, камней, Е и Z баффов.\n\n" +
-                                "7. Бой считается оконченным, когда оба игрока указали победителя на канале <#" + historyChannel + ">");
+                                "6. Запрещается использовать функцию 'cпасение' во время боя.\n\n" +
+                                "7. Нет никаких ограничений на использования алхимки, еды, камней, Е и Z баффов.\n\n" +
+                                "8. Бой считается оконченным, когда оба игрока указали победителя на канале <#" + historyChannel + ">");
 
         builder2.setTitle("Доступные команды")
                         .setDescription("Все команды доступны на русском и английском языках.\n" +
@@ -74,7 +83,7 @@ public class InitDescriptionCommand implements ICommand {
         builder3.setTitle("Как принять участие в боях")
                         .setDescription("1. **Прочесть все правила**.\n\n" +
                                 "2. Зарегистрироваться.\n" +
-                                "Ввести команду `=регистрация` на канале <#" + publicChannel + ">.\n" +
+                                "Ввести команду `=регистрация` на канале <#" + floodilkaChannel + ">.\n" +
                                 "\n" +
                                 "3. Выбрать классы.\n" +
                                 "Выбрать ДО трех классов в личных сообщениях с ботом.\n" +
@@ -171,9 +180,9 @@ public class InitDescriptionCommand implements ICommand {
                                 "*Сизифов труд - бесполезные, повторяемые вновь и вновь усилия.*\n\n" +
                                 "2. <@&" + Configuration.getInstance().titlesList.get(1) + ">\n" +
                                 "Титул может принадлежать только одному игроку.\n" +
-                                "Титул присуждается игроку, который одержал 5 побед подряд над разными противниками.\n" +
+                                "Титул присуждается игроку, который одержал 10 побед подряд над разными противниками.\n" +
                                 "Титул выдается при обращении к администрации или рефери, если условие соблюдено.\n" +
-                                "Титул можно отобрать, в случае, если вы одержали 5 побед подряд и, после, победили в вызове против держателя титула.\n\n" +
+                                "Титул можно отобрать, в случае, если вы одержали 10 побед подряд и, после, победили в вызове против держателя титула.\n\n" +
                                 "3. <@&" + Configuration.getInstance().titlesList.get(2) + ">\n" +
                                 "Титул может принадлежать только одному игроку.\n" +
                                 "Титул присуждается первому игроку, который одержал победу не проиграв ни одного раунда.\n" +
@@ -181,14 +190,14 @@ public class InitDescriptionCommand implements ICommand {
                                 "*И когда они были в поле, восстал Каин на Авеля, брата своего, и убил его.*\n\n" +
                                 "4. <@&" + Configuration.getInstance().titlesList.get(3) + ">\n" +
                                 "Титул может принадлежать только одному игроку.\n" +
-                                "Титул присуждается игроку, который одержал 10 побед подряд над разными противниками.\n" +
+                                "Титул присуждается игроку, который одержал 20 побед подряд над разными противниками.\n" +
                                 "Титул выдается при обращении к администрации или рефери, если условие соблюдено.\n" +
-                                "Титул можно отобрать, в случае, если вы одержали 5 побед подряд и, после, победили в вызове против держателя титула.\n\n" +
+                                "Титул можно отобрать, в случае, если вы одержали 20 побед подряд и, после, победили в вызове против держателя титула.\n\n" +
                                 "5. <@&" + Configuration.getInstance().titlesList.get(4) + ">\n" +
                                 "Титул может принадлежать только одному игроку.\n" +
                                 "Титул автоматически присуждается первому игроку, который достиг ранга " +
                                 "<@&" + Configuration.getInstance().getChampionRankId() + "> не проиграв ни одного боя.\n" +
-                                "Титул можно отобрать, в случае, если у вас нет поражений и вы выиграли противника с этим титулом, бросив ему вызов.\n" +
+                                "Титул можно отобрать, в случае, если у вас нет поражений и вы выиграли противника с этим титулом, бросив ему вызов.\n\n" +
                                 "*Арес, отличаясь вероломством и хитростью, предпочитал войну коварную и кровавую, войну ради самой войны.*");
 
         ranksChannel.sendMessageEmbeds(builder9.build(), builder10.build()).queue();

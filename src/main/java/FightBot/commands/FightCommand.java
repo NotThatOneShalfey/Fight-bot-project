@@ -28,6 +28,10 @@ public class FightCommand implements ICommand {
     @SneakyThrows
     @Override
     public void handle(List<String> args, GuildMessageReceivedEvent event) {
+        if (event.getChannel().getIdLong() != Configuration.getInstance().getPublicChannelId()) {
+            return;
+        }
+
         TextChannel textChannel = event.getChannel();
         Member bot = event.getGuild().getSelfMember();
         Map<Long, Long> rankingsMap = Configuration.getInstance().getRankingsMap();
