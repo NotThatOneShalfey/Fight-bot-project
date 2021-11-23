@@ -5,6 +5,7 @@ import FightBot.configuration.Configuration;
 import FightBot.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -76,5 +77,14 @@ public class Listener extends ListenerAdapter {
     @Override
     public void onGuildMemberRoleRemove(@NotNull GuildMemberRoleRemoveEvent event) {
         rolesHandler.handleRolesRemove(event);
+    }
+
+    @Override
+    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
+        log.info("On guild member leave");
+        if (Utils.getInstance().fighters.containsKey(event.getUser().getIdLong())) {
+            log.warn("Executing members check");
+            Utils.getInstance().checkMembersOnCall();
+        }
     }
 }
