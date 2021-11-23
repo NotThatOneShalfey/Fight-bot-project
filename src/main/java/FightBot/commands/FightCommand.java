@@ -52,7 +52,7 @@ public class FightCommand implements ICommand {
         Fighter firstFighter = fighters.get(event.getMember().getIdLong());
         Fighter secondFighter = fighters.get(mentionedUsers.get(0).getIdLong());
         // Проверка зареган ли первый боец
-        if (firstFighter == null) {
+        if (firstFighter == null || firstFighter.getClasses().isEmpty()) {
             textChannel.sendMessage(String.format(Constants.ON_NON_EXISTING_FIGHTER_REGISTER, event.getAuthor().getAsMention())).queue(
                     (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
             );
@@ -60,7 +60,7 @@ public class FightCommand implements ICommand {
         }
 
         // Проверка зареган ли второй боец
-        if (secondFighter == null) {
+        if (secondFighter == null || secondFighter.getClasses().isEmpty()) {
             textChannel.sendMessage(String.format(Constants.ON_SOMEONE_NON_EXISTING_REGISTER, event.getGuild().getMemberById(mentionedUsers.get(0).getIdLong()).getAsMention())).queue(
                     (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
             );
