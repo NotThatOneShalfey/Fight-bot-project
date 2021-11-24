@@ -47,7 +47,8 @@ public class Fighter {
         }
         eBuilder.addField("Классы", classesString, false)
                 .addField("Побед/поражений", this.wins.toString() + " : " + this.loses.toString(), false)
-                .addField("Побед подряд", this.winStreak.toString(), false);
+                .addField("Побед подряд", this.winStreak.toString(), false)
+                .addField("Статус", this.isActive() ? "Активен" : "Неактивен", false);
         return eBuilder.build();
     }
 

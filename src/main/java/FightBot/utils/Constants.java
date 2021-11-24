@@ -14,8 +14,8 @@ public class Constants {
     @Getter
     private static final List<SelectOption> optionsList = new ArrayList<>();
 
-    public static final String ON_REGISTER_CALL_WITHOUT_ARGS = "%s необходимо задать фамилию в игре в качестве аргумента!";
-    public static final String ON_EXISTING_FIGHTER_REGISTER = "%s вы уже были зарегистрированы!";
+    //public static final String ON_REGISTER_CALL_WITHOUT_ARGS = "%s необходимо задать фамилию в игре в качестве аргумента!";
+    //public static final String ON_EXISTING_FIGHTER_REGISTER = "%s вы уже были зарегистрированы!";
     public static final String ON_NON_EXISTING_FIGHTER_REGISTER = "%s вы еще не были зарегистрированы!";
     public static final String ON_SOMEONE_NON_EXISTING_REGISTER = "%s еще не был зарегистрирован!";
     public static final String ON_SELF_FIGHT_CALL = "%s нельзя вызвать самого себя!";
@@ -25,8 +25,9 @@ public class Constants {
     public static final String ON_NON_AVAILABLE_CALL = "%s вызываемый соперник недоступен!\n" +
             "1. Возможно соперник неактивен.\n" +
             "2. Возможно ваш ранг не подходит для вызова соперника.\n" +
-            "3. Возможно вы уже дрались с этим соперником сегодня.";
-    public static final String ON_LOCKED_FIGHTER_CALL = "%s не может участвовать в бою, поскольку на него уже зарегистирован вызов!";
+            "3. Возможно вы уже дрались с этим соперником сегодня.\n" +
+            "4. Возможно соперник уже имеет активный вызов.";
+    //public static final String ON_LOCKED_FIGHTER_CALL = "%s не может участвовать в бою, поскольку на него уже зарегистирован вызов!";
     public static final String ON_SELF_AS_LOCKED_CALL = "%s, вы не можете участвовать в бою, поскольку на вас уже зарегистирован вызов!";
     //public static final String ON_DATE_TOO_EARLY_CALL = "%s вы не можете объявлять бой одному и тому же бойцу чаще, чем один раз в день!";
     public static final String BUTTON_ACCEPT_COMMAND_ID = "Accept";

@@ -60,7 +60,8 @@ public class AvailableCommand implements ICommand {
         }
 
         if (!availableFightersNames.isEmpty()) {
-            textChannel.sendMessageEmbeds(buildEmbed(String.join("\n", availableFightersNames)
+            textChannel.sendMessage(event.getAuthor().getAsMention() + " таблица доступных для вас игроков.")
+                    .setEmbeds(buildEmbed(String.join("\n", availableFightersNames)
                                                     , String.join("\n", availableFightersRanks)
                                                     , String.join("\n", availableFightersClasses)))
                     .queue(

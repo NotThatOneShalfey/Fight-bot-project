@@ -71,14 +71,6 @@ public class FightCommand implements ICommand {
             return;
         }
 
-        // Проверка залочен ли второй боец
-        if (lockedFightersList.contains(secondFighter.getId())) {
-            textChannel.sendMessage(String.format(Constants.ON_LOCKED_FIGHTER_CALL, secondFighter.getDiscordName())).queue(
-                    (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
-            );
-            return;
-        }
-
         // Проверка залочен ли первый боец
         if (lockedFightersList.contains(firstFighter.getId())) {
             textChannel.sendMessage(String.format(Constants.ON_SELF_AS_LOCKED_CALL, firstFighter.getDiscordName())).queue(
