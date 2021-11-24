@@ -1,7 +1,6 @@
 package FightBot.commands;
 
 import FightBot.configuration.Configuration;
-import FightBot.entities.FightDateLock;
 import FightBot.entities.Fighter;
 import FightBot.utils.Constants;
 import FightBot.utils.Utils;
@@ -15,14 +14,13 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static FightBot.utils.Constants.ON_LOW_RANK_OR_EARLY_CALL;
+import static FightBot.utils.Constants.ON_NON_AVAILABLE_CALL;
 
 @Slf4j
 public class FightCommand implements ICommand {
@@ -99,8 +97,8 @@ public class FightCommand implements ICommand {
 
         // Проверка на дату и ранги
         if (!Utils.getInstance().getListOfAvailableFighters(firstFighter).contains(secondFighter)) {
-            textChannel.sendMessage(String.format(ON_LOW_RANK_OR_EARLY_CALL, event.getAuthor().getAsMention())).queue(
-                    (message) -> message.delete().queueAfter(5L, TimeUnit.SECONDS)
+            textChannel.sendMessage(String.format(ON_NON_AVAILABLE_CALL, event.getAuthor().getAsMention())).queue(
+                    (message) -> message.delete().queueAfter(15L, TimeUnit.SECONDS)
             );
             return;
         }

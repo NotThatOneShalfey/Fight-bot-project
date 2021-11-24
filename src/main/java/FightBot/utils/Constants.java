@@ -22,7 +22,10 @@ public class Constants {
     public static final String ON_UNKNOWN_COMMAND_HELP_CALL = "Такой команды не существует!";
     public static final String ON_HELP_HELP_CALL = "Чтобы вызвать помощь по любой из существующих команд введите =help/=помощь <название команды> без '='.";
     public static final String ON_NON_EXISTING_RANK = "%s ваш ранг не подходит для вызова соперника!";
-    public static final String ON_LOW_RANK_OR_EARLY_CALL = "%s ваш ранг не подходит для вызова соперника, либо вы сегодня уже устраивали бой с этим соперником!";
+    public static final String ON_NON_AVAILABLE_CALL = "%s вызываемый соперник недоступен!\n" +
+            "1. Возможно соперник неактивен.\n" +
+            "2. Возможно ваш ранг не подходит для вызова соперника.\n" +
+            "3. Возможно вы уже дрались с этим соперником сегодня.";
     public static final String ON_LOCKED_FIGHTER_CALL = "%s не может участвовать в бою, поскольку на него уже зарегистирован вызов!";
     public static final String ON_SELF_AS_LOCKED_CALL = "%s, вы не можете участвовать в бою, поскольку на вас уже зарегистирован вызов!";
     //public static final String ON_DATE_TOO_EARLY_CALL = "%s вы не можете объявлять бой одному и тому же бойцу чаще, чем один раз в день!";

@@ -69,7 +69,7 @@ public class Utils {
                 .filter(fighter ->
                         fighter.getId() != initialFighter.getId()
                         && (fighter.isActive() || !FightBot.configuration.Configuration.getInstance().isOnlyActiveSearch())
-                        && fighter.getRank() - initialFighter.getRank() < FightBot.configuration.Configuration.getInstance().getRankDifference()
+                        && fighter.getRank() - initialFighter.getRank() <= FightBot.configuration.Configuration.getInstance().getRankDifference()
                         && fighter.getThreshold() >= initialFighter.getThreshold()
                         && !fightDatesList.contains(new FightDateLock(LocalDate.now(), fighter.getId(), initialFighter.getId())))
                 .collect(Collectors.toList());
