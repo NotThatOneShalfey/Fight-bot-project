@@ -20,6 +20,7 @@ public class Fighter {
     private String rankName;
     private List<String> classes = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
+    private Long threshold = 0L;
     private Long wins = 0L;
     private Long loses = 0L;
     private Long winStreak = 0L;
@@ -46,7 +47,8 @@ public class Fighter {
         }
         eBuilder.addField("Классы", classesString, false)
                 .addField("Побед/поражений", this.wins.toString() + " : " + this.loses.toString(), false)
-                .addField("Побед подряд", this.winStreak.toString(), false);
+                .addField("Побед подряд", this.winStreak.toString(), false)
+                .addField("Статус", this.isActive() ? "Активен" : "Неактивен", false);
         return eBuilder.build();
     }
 

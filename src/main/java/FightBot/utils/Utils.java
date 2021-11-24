@@ -69,9 +69,10 @@ public class Utils {
                 .filter(fighter ->
                         fighter.getId() != initialFighter.getId()
                         && (fighter.isActive() || !FightBot.configuration.Configuration.getInstance().isOnlyActiveSearch())
-                        && fighter.getRank() - initialFighter.getRank() < FightBot.configuration.Configuration.getInstance().getRankDifference()
-                        && fighter.getRank() - initialFighter.getRank() >= 0
-                        && !fightDatesList.contains(new FightDateLock(LocalDate.now(), fighter.getId(), initialFighter.getId())))
+                        && fighter.getRank() - initialFighter.getRank() <= FightBot.configuration.Configuration.getInstance().getRankDifference()
+                        && fighter.getThreshold() >= initialFighter.getThreshold()
+                        && !fightDatesList.contains(new FightDateLock(LocalDate.now(), fighter.getId(), initialFighter.getId()))
+                        && !lockedFightersList.contains(fighter.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -116,6 +117,17 @@ public class Utils {
         log.info("Roles check up has ended");
     }
 
+    public void checkThresholdsOnCall() {
+        log.info("Start fighters thresholds check");
+        for (Map.Entry<Long, Fighter> entry : fighters.entrySet()) {
+            if (entry.getValue().getThreshold() == null) {
+                log.warn("Change threshold from null to 0 on {}", entry.getValue());
+                entry.getValue().setThreshold(0L);
+            }
+        }
+        log.info("Fighters thresholds check has ended");
+    }
+
     public void checkMembersOnCall() {
         log.info("Start members check up");
         Guild guild = manager.getGuildById(FightBot.configuration.Configuration.getInstance().getGuildId());
@@ -125,6 +137,10 @@ public class Utils {
             if (guild.getMemberById(entry.getKey()) == null) {
                 iterator.remove();
                 log.info("Fighter with ID = {} and discord name = {} has been removed", entry.getKey(), entry.getValue().getDiscordName());
+            }
+            if (!guild.getMemberById(entry.getKey()).getEffectiveName().isEmpty()
+                    && !guild.getMemberById(entry.getKey()).getEffectiveName().equals(entry.getValue().getDiscordName())) {
+                entry.getValue().setDiscordName(guild.getMemberById(entry.getKey()).getEffectiveName());
             }
         }
         log.info("Members check up has ended");
