@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
+import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -84,6 +85,14 @@ public class Listener extends ListenerAdapter {
         log.info("On guild member leave");
         if (Utils.getInstance().fighters.containsKey(event.getUser().getIdLong())) {
             log.warn("Executing members check");
+            Utils.getInstance().checkMembersOnCall();
+        }
+    }
+
+    @Override
+    public void onGuildMemberUpdateNickname(@NotNull GuildMemberUpdateNicknameEvent event) {
+        if (Utils.getInstance().fighters.containsKey(event.getUser().getIdLong())) {
+            log.warn("Executing members check on nickname change");
             Utils.getInstance().checkMembersOnCall();
         }
     }
