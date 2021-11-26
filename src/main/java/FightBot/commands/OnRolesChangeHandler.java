@@ -62,18 +62,25 @@ public class OnRolesChangeHandler {
         long thresholdValue = fighter.getRank() / 5;
         Long fighterThresholdId = Configuration.getInstance().thresholdsMap.get(thresholdValue);
         Long fighterPrevThresholdId = Configuration.getInstance().thresholdsMap.get(thresholdValue - 1);
+        Long fighterFutThresholdId = Configuration.getInstance().thresholdsMap.get(thresholdValue + 1);
         log.debug("Handle threshold debug, value : {}, currThreshold = {}, prevThreshold = {}", thresholdValue, fighterThresholdId, fighterPrevThresholdId);
+        // Задаем новый пороговый ранг
         if (fighterThresholdId != null && !member.getRoles().contains(event.getGuild().getRoleById(fighterThresholdId))) {
             event.getGuild().addRoleToMember(fighter.getId(), event.getGuild().getRoleById(fighterThresholdId)).complete();
             fighter.setThreshold(thresholdValue);
             fighters.put(fighter.getId(), fighter);
             log.debug("Set new threshold role and value to {}", fighter.getDiscordName());
         }
+        // Если файтер поднялся удаляем старый
         if (fighterPrevThresholdId != null && member.getRoles().contains(event.getGuild().getRoleById(fighterPrevThresholdId))) {
             event.getGuild().removeRoleFromMember(fighter.getId(), event.getGuild().getRoleById(fighterPrevThresholdId)).complete();
-            log.debug("Remove old threshold role from {}", fighter.getDiscordName());
+            log.debug("Remove old threshold role on upgrade from {}", fighter.getDiscordName());
         }
-
+        // Если файтер опустился
+        if (fighterFutThresholdId != null && member.getRoles().contains(event.getGuild().getRoleById(fighterFutThresholdId))) {
+            event.getGuild().removeRoleFromMember(fighter.getId(), event.getGuild().getRoleById(fighterFutThresholdId)).complete();
+            log.debug("Remove old threshold role on downgrade from {}", fighter.getDiscordName());
+        }
     }
 
 }

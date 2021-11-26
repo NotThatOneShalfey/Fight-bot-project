@@ -138,7 +138,7 @@ public class Utils {
                 iterator.remove();
                 log.info("Fighter with ID = {} and discord name = {} has been removed", entry.getKey(), entry.getValue().getDiscordName());
             }
-            if (!guild.getMemberById(entry.getKey()).getEffectiveName().isEmpty()
+            else if (!guild.getMemberById(entry.getKey()).getEffectiveName().isEmpty()
                     && !guild.getMemberById(entry.getKey()).getEffectiveName().equals(entry.getValue().getDiscordName())) {
                 entry.getValue().setDiscordName(guild.getMemberById(entry.getKey()).getEffectiveName());
             }

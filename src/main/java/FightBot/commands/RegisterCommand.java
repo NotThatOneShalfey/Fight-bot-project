@@ -46,7 +46,10 @@ public class RegisterCommand implements ICommand {
         Role role = event.getGuild().getRoleById(Configuration.getInstance().rankingsMap.get(0L));
         fighter.setRankName(role.getName());
 
-        guild.addRoleToMember(event.getMember(), guild.getRoleById(Configuration.getInstance().rankingsMap.get(0L))).queue();
+
+        //guild.addRoleToMember(event.getMember(), guild.getRoleById(Configuration.getInstance().rankingsMap.get(0L))).queue();
+
+        guild.modifyMemberRoles(event.getMember(), guild.getRoleById(Configuration.getInstance().rankingsMap.get(0L))).queue();
 
         Utils.getInstance().fighters.put(event.getMember().getIdLong(), fighter);
 

@@ -54,6 +54,8 @@ public class Listener extends ListenerAdapter {
         if (event.getMessage().getContentRaw().equals("=check") && event.getAuthor().getIdLong() == Configuration.getInstance().getOwnerId()) {
             event.getMessage().delete().complete();
             Utils.getInstance().checkRolesOnCall();
+            Utils.getInstance().checkMembersOnCall();
+            Utils.getInstance().checkThresholdsOnCall();
         }
 
     }
