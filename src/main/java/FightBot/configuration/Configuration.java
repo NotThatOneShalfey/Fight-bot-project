@@ -28,6 +28,7 @@ public class Configuration {
     private long ranksChannelId;
     private long publicDeleterDelay;
     private long championRankId;
+    private long syzifRankId;
     private long refereeRoleId;
     private long historyDeleterDelay;
     private long deleterSleepTimeout = 10;

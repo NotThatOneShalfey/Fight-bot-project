@@ -1,6 +1,7 @@
 package FightBot.commands;
 
 import FightBot.configuration.Configuration;
+import FightBot.core.RankCalculation;
 import FightBot.entities.FightDateLock;
 import FightBot.entities.Fighter;
 import FightBot.utils.Constants;
@@ -15,6 +16,9 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -59,152 +63,26 @@ public class ButtonWinner implements IButtonCommand {
                 return;
             }
         }
-        // Если результат сошёлся или выбрал рефери
-        Map<Long, Long> rankingsMap = Configuration.getInstance().rankingsMap;
-
-        Long firstMemberNextRank = firstFighter.getRank();
-        Long secondMemberNextRank = secondFighter.getRank();
-
-        Boolean highBid = false;
-
-        if (Math.max(firstMemberNextRank, secondMemberNextRank) - Math.min(firstMemberNextRank, secondMemberNextRank) > 3) {
-            highBid = true;
-        }
-        log.debug("High bid : {}", highBid);
-
-        Long firstMemberCurrentRankId = rankingsMap.get(firstMemberNextRank);
-        Long secondMemberCurrentRankId = rankingsMap.get(secondMemberNextRank);
-
-        Long firstMemberNextRankId;
-        Long secondMemberNextRankId;
-
-        Long firstFighterWins = firstFighter.getWins();
-        Long firstFighterWinStreak = firstFighter.getWinStreak();
-        Long firstFighterLoses = firstFighter.getLoses();
-        Long secondFighterWins = secondFighter.getWins();
-        Long secondFighterWinStreak = secondFighter.getWinStreak();
-        Long secondFighterLoses = secondFighter.getLoses();
-
-        // Вычисляем кто выиграл по нажатой кнопке
+        // Если результат сошёлся или выбрал рефери - вычисляем кто выиграл по нажатой кнопке
+        RankCalculation rankCalculation = new RankCalculation(guild);
+        List<Fighter> fighterList;
         // Если победил первый
         if (event.getComponent().getLabel().contains(firstFighter.getDiscordName())) {
-            // Если ранг первого максимальный, то оставляем без изменений
-            if (rankingsMap.get(firstMemberNextRank + 1) == null) {
-                firstMemberNextRankId = firstMemberCurrentRankId;
-            }
-            // Если высокие ставки и ранг первого меньше ранга второго, то добавляем +2
-            else if (highBid && firstMemberNextRank < secondMemberNextRank && rankingsMap.get(firstMemberNextRank + 2) != null) {
-                firstMemberNextRank = firstMemberNextRank + 2;
-                firstMemberNextRankId = rankingsMap.get(firstMemberNextRank);
-            }
-            // В другом случае добавляем +1
-            else {
-                firstMemberNextRank = firstMemberNextRank + 1;
-                firstMemberNextRankId = rankingsMap.get(firstMemberNextRank);
-            }
-            // Если ранг второго минимальный, то оставляем без изменений
-            if (rankingsMap.get(secondMemberNextRank - 1) == null) {
-                secondMemberNextRankId = secondMemberCurrentRankId;
-            }
-            // Если высокие ставки и ранг первого меньше ранга второго, то понижаем на -2
-            else if (highBid && firstMemberNextRank < secondMemberNextRank && rankingsMap.get(secondMemberNextRank - 2) != null) {
-                secondMemberNextRank = secondMemberNextRank - 2;
-                secondMemberNextRankId = rankingsMap.get(secondMemberNextRank);
-            }
-            // В другом случае понижаем -1
-            else {
-                secondMemberNextRank = secondMemberNextRank - 1;
-                secondMemberNextRankId = rankingsMap.get(secondMemberNextRank);
-            }
-            // Устанавливаем победы/поражения
-            firstFighter.setWins(firstFighterWins + 1);
-            firstFighter.setWinStreak(firstFighterWinStreak + 1);
-            secondFighter.setLoses(secondFighterLoses + 1);
-            if (secondFighterWinStreak != 0) {
-                secondFighter.setWinStreak(0L);
-            }
+            fighterList = rankCalculation.onWinnerDecision(firstFighter, secondFighter);
         }
         // Если победил второй
         else {
-            // Если ранг первого минимальный, то оставляем без изменений
-            if (rankingsMap.get(firstMemberNextRank - 1) == null) {
-                firstMemberNextRankId = firstMemberCurrentRankId;
-            }
-            // Если высокие ставки и ранг второго меньше ранга первого, то понижаем на -2
-            else if (highBid && secondMemberNextRank < firstMemberNextRank && rankingsMap.get(firstMemberNextRank - 2) != null) {
-                firstMemberNextRank = firstMemberNextRank - 2;
-                firstMemberNextRankId = rankingsMap.get(firstMemberNextRank);
-            }
-            // В другом случае понижаем -1
-            else {
-                firstMemberNextRank = firstMemberNextRank - 1;
-                firstMemberNextRankId = rankingsMap.get(firstMemberNextRank);
-            }
-            // Если ранг второго максимальный, то оставляем без изменений
-            if (rankingsMap.get(secondMemberNextRank + 1) == null) {
-                secondMemberNextRankId = secondMemberCurrentRankId;
-            }
-            // Если высокие ставки и ранг второго меньше ранга первого, то повышаем на +2
-            else if (highBid && secondMemberNextRank < firstMemberNextRank && rankingsMap.get(secondMemberNextRank + 2) != null) {
-                secondMemberNextRank = secondMemberNextRank + 2;
-                secondMemberNextRankId = rankingsMap.get(secondMemberNextRank);
-            }
-            // В другом случае повышаем +1
-            else {
-                secondMemberNextRank = secondMemberNextRank + 1;
-                secondMemberNextRankId = rankingsMap.get(secondMemberNextRank);
-            }
-            // Устанавливаем победы/поражения
-            secondFighter.setWins(secondFighterWins + 1);
-            secondFighter.setWinStreak(secondFighterWinStreak + 1);
-            firstFighter.setLoses(firstFighterLoses + 1);
-            if (firstFighterWinStreak != 0) {
-                firstFighter.setWinStreak(0L);
-            }
+            fighterList = rankCalculation.onWinnerDecision(secondFighter, firstFighter);
         }
 
-        log.debug("Отметка о рангах : " +
-                        "Текущий ранг 1го бойца = {}. " +
-                        "Текущий ранг 2го бойца = {}. " +
-                        "После изменения ранг 1го бойца = {}. " +
-                        "После изменения ранг 2го бойца = {}. "
-                , guild.getRoleById(firstMemberCurrentRankId)
-                , guild.getRoleById(secondMemberCurrentRankId)
-                , guild.getRoleById(firstMemberNextRankId)
-                , guild.getRoleById(secondMemberNextRankId));
-
-        // Титул "Сизиф"
-        if (!Configuration.getInstance().isInDebugMode()) {
-            // Получение роли
-            Role title = guild.getRoleById(910971199755010108L);
-            // Проверяем победы поражения первого игрока
-            if (firstFighter.getWins() < firstFighter.getLoses() && !guild.getMemberById(firstFighter.getId()).getRoles().contains(title)) {
-                guild.addRoleToMember(firstFighter.getId(), title).queue();
+        for (Fighter fighter : fighterList) {
+            if (fighter.getId() == firstFighter.getId()) {
+                firstFighter = fighter;
             }
-            else if (firstFighter.getWins() >= firstFighter.getLoses() && guild.getMemberById(firstFighter.getId()).getRoles().contains(title)) {
-                guild.removeRoleFromMember(firstFighter.getId(), title).queue();
-            }
-            // Проверяем победы поражения второго игрока
-            if (secondFighter.getWins() < secondFighter.getLoses() && !guild.getMemberById(secondFighter.getId()).getRoles().contains(title)) {
-                guild.addRoleToMember(secondFighter.getId(), title).queue();
-            }
-            else if (secondFighter.getWins() >= secondFighter.getLoses() && guild.getMemberById(secondFighter.getId()).getRoles().contains(title)) {
-                guild.removeRoleFromMember(secondFighter.getId(), title).queue();
+            else {
+                secondFighter = fighter;
             }
         }
-
-        // Убираем роль у первого бойца
-        guild.removeRoleFromMember(firstFighter.getId(), guild.getRoleById(firstMemberCurrentRankId)).complete();
-        // Добавляем роль первому бойцу
-        guild.addRoleToMember(firstFighter.getId(), guild.getRoleById(firstMemberNextRankId)).queue();
-        firstFighter.setRank(firstMemberNextRank);
-        firstFighter.setRankName(guild.getRoleById(firstMemberNextRankId).getName());
-        // Убираем роль у второго бойца
-        guild.removeRoleFromMember(secondFighter.getId(), guild.getRoleById(secondMemberCurrentRankId)).complete();
-        // Добавляем роль второму бойцу
-        guild.addRoleToMember(secondFighter.getId(), guild.getRoleById(secondMemberNextRankId)).queue();
-        secondFighter.setRank(secondMemberNextRank);
-        secondFighter.setRankName(guild.getRoleById(secondMemberNextRankId).getName());
 
         fightMessage.setFirstFighter(firstFighter);
         fightMessage.setSecondFighter(secondFighter);
@@ -219,12 +97,8 @@ public class ButtonWinner implements IButtonCommand {
         Utils.getInstance().lockedFightersList.remove(firstFighter.getId());
         Utils.getInstance().lockedFightersList.remove(secondFighter.getId());
 
-
-
         Utils.getInstance().fighters.put(firstFighter.getId(), firstFighter);
         Utils.getInstance().fighters.put(secondFighter.getId(), secondFighter);
-
-        log.debug("List of locked fighters on winner button : {}", Utils.getInstance().lockedFightersList.toString());
 
         Utils.getInstance().fightMessages.remove(event.getMessage().getIdLong());
 
