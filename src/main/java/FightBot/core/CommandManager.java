@@ -1,5 +1,8 @@
 package FightBot.core;
 
+import FightBot.admin.commands.CancelCommand;
+import FightBot.admin.commands.InitDescriptionCommand;
+import FightBot.buttons.*;
 import FightBot.commands.*;
 import FightBot.configuration.Configuration;
 import FightBot.interfaces.IButtonCommand;
@@ -76,7 +79,7 @@ public class CommandManager {
     }
 
     public void handleButtonClick(ButtonClickEvent event) {
-        log.info("Button command - {}, Caller id = {}, name = {}", event.getComponentId(), event.getMember().getIdLong(), event.getMember().getEffectiveName());
+        log.info("Button command - {}, Caller id = {}, name = {}", event.getComponentId(), event.getUser().getIdLong(), event.getUser().getName());
         String command = event.getComponentId().split("-")[0];
         String arg = "";
         if (event.getComponentId().split("-").length > 1) {
@@ -98,9 +101,18 @@ public class CommandManager {
         this.addCommand(new InactiveCommand());
         this.addCommand(new RandomCommand());
         this.addCommand(new InitDescriptionCommand());
+        this.addCommand(new TopCommand());
+        this.addCommand(new CommandsCommand());
         this.addButtonCommand(new ButtonAccept());
         this.addButtonCommand(new ButtonDecline());
         this.addButtonCommand(new ButtonWinner());
         this.addSelectionMenu(new ClassSelection());
+        this.addButtonCommand(new ButtonAvailable());
+        this.addButtonCommand(new ButtonRandom());
+        this.addButtonCommand(new ButtonTop());
+        this.addButtonCommand(new ButtonActive());
+        this.addButtonCommand(new ButtonInactive());
+        this.addButtonCommand(new ButtonRank());
+        this.addButtonCommand(new ButtonDelete());
     }
 }

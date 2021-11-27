@@ -1,4 +1,4 @@
-package FightBot.commands;
+package FightBot.admin.commands;
 
 import FightBot.configuration.Configuration;
 import FightBot.entities.FightMessage;

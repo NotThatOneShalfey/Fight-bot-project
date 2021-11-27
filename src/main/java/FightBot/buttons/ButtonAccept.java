@@ -1,4 +1,4 @@
-package FightBot.commands;
+package FightBot.buttons;
 
 import FightBot.configuration.Configuration;
 import FightBot.utils.Constants;

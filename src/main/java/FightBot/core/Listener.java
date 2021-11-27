@@ -1,6 +1,6 @@
 package FightBot.core;
 
-import FightBot.commands.OnRolesChangeHandler;
+import FightBot.commands.PrivateCommandsCommand;
 import FightBot.configuration.Configuration;
 import FightBot.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameE
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +23,7 @@ public class Listener extends ListenerAdapter {
     private final DeleterThread deleterThread = new DeleterThread();
     private final SaverThread saverThread = new SaverThread();
     private final OnRolesChangeHandler rolesHandler = new OnRolesChangeHandler();
+    private final PrivateCommandsCommand privateCommands = new PrivateCommandsCommand();
 
     @Override
     public void onReady(@NotNull ReadyEvent event) {
@@ -96,6 +98,16 @@ public class Listener extends ListenerAdapter {
         if (Utils.getInstance().fighters.containsKey(event.getUser().getIdLong())) {
             log.warn("Executing members check on nickname change");
             Utils.getInstance().checkMembersOnCall();
+        }
+    }
+
+    @Override
+    public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
+            return;
+        }
+        if (event.getMessage().getContentRaw().equals("=команды") || event.getMessage().getContentRaw().equals("=commands")) {
+             privateCommands.handle(event);
         }
     }
 }

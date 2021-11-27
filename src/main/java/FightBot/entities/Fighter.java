@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Fighter {
+public class Fighter implements Comparable<Fighter>{
     private long id;
     private String discordName;
     private Long rank;
@@ -56,4 +57,9 @@ public class Fighter {
         return String.join("\n", this.classes);
     }
     public String titlesAsString() {return String.join("\n", this.titles);}
+
+    @Override
+    public int compareTo(@NotNull Fighter o) {
+        return o.getRank().intValue() - this.getRank().intValue();
+    }
 }

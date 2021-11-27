@@ -1,4 +1,4 @@
-package FightBot.commands;
+package FightBot.buttons;
 
 import FightBot.configuration.Configuration;
 import FightBot.core.RankCalculation;
@@ -12,14 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 public class ButtonWinner implements IButtonCommand {
@@ -40,7 +36,6 @@ public class ButtonWinner implements IButtonCommand {
             if (event.getMember().getIdLong() != firstFighter.getId() && event.getMember().getIdLong() != secondFighter.getId()) {
                 return;
             }
-
             // Записываем результат от первого бойца
             if (event.getMember().getIdLong() == firstFighter.getId()) {
                 fightMessage.setFirstFighterWinnerDecision(event.getComponent().getLabel());

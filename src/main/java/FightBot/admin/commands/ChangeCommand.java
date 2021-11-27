@@ -1,4 +1,4 @@
-package FightBot.commands;
+package FightBot.admin.commands;
 
 import FightBot.entities.Fighter;
 import FightBot.interfaces.ICommand;

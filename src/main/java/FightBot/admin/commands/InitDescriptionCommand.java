@@ -1,4 +1,4 @@
-package FightBot.commands;
+package FightBot.admin.commands;
 
 import FightBot.configuration.Configuration;
 import FightBot.interfaces.ICommand;
@@ -78,7 +78,11 @@ public class InitDescriptionCommand implements ICommand {
                                 "`=случайно` или `=random`\n" +
                                 "\n" +
                                 "8. Если нужна помощь по отдельной команде:\n" +
-                                "`=help` или `=помощь`");
+                                "`=help` или `=помощь`\n\n" +
+                                "9. Если хотите использовать команды по кнопкам:\n" +
+                                "`=commands` или `=команды`\n\n" +
+                                "10. Получить рейтинг игроков:\n" +
+                                "`=top` или `=топ`");
 
         builder3.setTitle("Как принять участие в боях")
                         .setDescription("1. **Прочесть все правила**.\n\n" +
@@ -163,7 +167,9 @@ public class InitDescriptionCommand implements ICommand {
                                 "2. Каждый из рангов имеет по 5 дивизионов.\n\n" +
                                 "3. Дивизионы идут от 5 до 1, далее следует переход на следующий ранг. Например, " +
                                 "если у вас Бронза 1, то при следующей победе вы перейдете в ранг Серебро, дивизион Серебро 5.\n\n" +
-                                "4. Существует отдельный ранг - <@&" + Configuration.getInstance().getChampionRankId() + ">. Этот ранг может иметь только один игрок.\n" +
+                                "4. Существует отдельный ранг - <@&" + Configuration.getInstance().getChampionRankId() + ">. " +
+                                "Этот ранг получает первый игрок, который достиг дивизиона <@&" + Configuration.getInstance().rankingsMap.get(Configuration.getInstance().rankingsMap.size()-1L) + ">.\n" +
+                                "Ранг может иметь только один игрок.\n" +
                                 "Игрок с рангом чемпион не может бросать вызовы ни одному из игроков, " +
                                 "однако его могут вызвать только игроки, " +
                                 "находящиеся в дивизионе <@&" + Configuration.getInstance().rankingsMap.get(Configuration.getInstance().rankingsMap.size()-1L) + ">.\n\n" +
