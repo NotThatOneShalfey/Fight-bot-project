@@ -1,5 +1,6 @@
 package FightBot.utils;
 
+import FightBot.core.RankCalculation;
 import FightBot.entities.FightDateLock;
 import FightBot.entities.FightMessage;
 import FightBot.entities.Fighter;
@@ -28,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Configuration
+@Configuration("Utils")
 public class Utils {
     private final JsonMapper mapper = new JsonMapper();
 

@@ -2,6 +2,7 @@ package FightBot.core;
 
 import FightBot.configuration.Configuration;
 import FightBot.entities.Fighter;
+import FightBot.utils.Utils;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,18 +82,25 @@ public class RankCalculation {
         checkTitleSyzif(winner);
         checkTitleSyzif(loser);
 
-        // Убираем роль у первого бойца
-        guild.removeRoleFromMember(winner.getId(), guild.getRoleById(winnerCurrentRankId)).complete();
-        // Добавляем роль первому бойцу
-        guild.addRoleToMember(winner.getId(), guild.getRoleById(winnerNextRankId)).queue();
         winner.setRank(winnerNextRank);
         winner.setRankName(guild.getRoleById(winnerNextRankId).getName());
-        // Убираем роль у второго бойца
-        guild.removeRoleFromMember(loser.getId(), guild.getRoleById(loserCurrentRankId)).complete();
-        // Добавляем роль второму бойцу
-        guild.addRoleToMember(loser.getId(), guild.getRoleById(loserNextRankId)).queue();
+        checkRankRoles(winner);
+
         loser.setRank(loserNextRank);
         loser.setRankName(guild.getRoleById(loserNextRankId).getName());
+        checkRankRoles(loser);
+//        // Убираем роль у первого бойца
+//        guild.removeRoleFromMember(winner.getId(), guild.getRoleById(winnerCurrentRankId)).complete();
+//        // Добавляем роль первому бойцу
+//        guild.addRoleToMember(winner.getId(), guild.getRoleById(winnerNextRankId)).queue();
+//        winner.setRank(winnerNextRank);
+//        winner.setRankName(guild.getRoleById(winnerNextRankId).getName());
+//        // Убираем роль у второго бойца
+//        guild.removeRoleFromMember(loser.getId(), guild.getRoleById(loserCurrentRankId)).complete();
+//        // Добавляем роль второму бойцу
+//        guild.addRoleToMember(loser.getId(), guild.getRoleById(loserNextRankId)).queue();
+//        loser.setRank(loserNextRank);
+//        loser.setRankName(guild.getRoleById(loserNextRankId).getName());
 
         List<Fighter> fighterList = new LinkedList<>();
         fighterList.add(winner);
@@ -110,6 +118,18 @@ public class RankCalculation {
         }
         else if (fighter.getWins() >= fighter.getLoses() && guild.getMemberById(fighter.getId()).getRoles().contains(title)) {
             guild.removeRoleFromMember(fighter.getId(), title).queue();
+        }
+    }
+
+    // Проверка ролей рангов при изменении
+    public void checkRankRoles(Fighter fighter) {
+        log.info("Check rank roles of fighter {}", fighter.getDiscordName());
+        Map<Long, Long> rankingsMap = Configuration.getInstance().rankingsMap;
+        for (Role role : guild.getMemberById(fighter.getId()).getRoles()) {
+            if (rankingsMap.containsValue(role.getIdLong())) {
+                guild.removeRoleFromMember(fighter.getId(), role).complete();
+                guild.addRoleToMember(fighter.getId(), guild.getRoleById(rankingsMap.get(fighter.getRank()))).queue();
+            }
         }
     }
 }

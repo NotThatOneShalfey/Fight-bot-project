@@ -2,6 +2,9 @@ package FightBot.core;
 
 import FightBot.commands.PrivateCommandsCommand;
 import FightBot.configuration.Configuration;
+import FightBot.threads.DeleterThread;
+import FightBot.threads.RankDowngradeScheduler;
+import FightBot.threads.SaverThread;
 import FightBot.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.ReadyEvent;
@@ -30,6 +33,7 @@ public class Listener extends ListenerAdapter {
         Utils.getInstance().checkRolesOnCall();
         Utils.getInstance().checkMembersOnCall();
         Utils.getInstance().checkThresholdsOnCall();
+        RankDowngradeScheduler.initRankDowngradeScheduler();
         log.info("Hello!! Now you are up to work!");
         saverThread.setDaemon(true);
         saverThread.start();

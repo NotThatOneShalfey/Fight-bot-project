@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.*;
 
 @Data
-@org.springframework.context.annotation.Configuration
+@org.springframework.context.annotation.Configuration("Configuration")
 @ConfigurationProperties(prefix = "fight-bot")
 @Slf4j
 public class Configuration {

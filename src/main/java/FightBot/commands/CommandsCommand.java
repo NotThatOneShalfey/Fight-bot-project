@@ -53,7 +53,9 @@ public class CommandsCommand implements ICommand {
 
     @Override
     public String getHelp() {
-        return "commands";
+        return "Бот отправляет в личные сообщения форму с кнопками. " +
+                "Если вам удобнее работать через кнопки, чем через отдельные команды, рекомендуем использовать такой способ. " +
+                "Также бот принимает эту команду не только в каналы сервера, но и в личные сообщения.";
     }
 
     @Override
@@ -68,6 +70,6 @@ public class CommandsCommand implements ICommand {
 
     @Override
     public boolean isVisible() {
-        return false;
+        return true;
     }
 }

@@ -34,10 +34,12 @@ public class TopCommand implements ICommand {
 
         // Если аргументы не пустые
         if (!args.isEmpty()) {
-            // Сортируем по первому аргументу без учета регистра
+            // Сортируем по первому + второму (если он есть) аргументу без учета регистра
+            String searchStr = args.get(0) + (args.size() > 1 ? " " + args.get(1) : "");
+
             fighters = fighters.stream()
                     .filter(fighter -> fighter.getClasses().stream().map(String::toLowerCase).collect(Collectors.toList())
-                                .contains(args.get(0).toLowerCase()))
+                                .contains(searchStr.toLowerCase()))
                     .collect(Collectors.toList());
         }
 

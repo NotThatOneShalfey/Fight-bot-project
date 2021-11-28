@@ -1,4 +1,4 @@
-package FightBot.core;
+package FightBot.threads;
 
 import FightBot.configuration.Configuration;
 import FightBot.entities.FightMessage;
